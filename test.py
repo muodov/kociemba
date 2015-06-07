@@ -308,9 +308,11 @@ if __name__ == '__main__':
     srch = twophase.search.Search()
 
     for i, tst in enumerate(javares):
+        print 'running test %d of %d...' % (i + 1, len(javares)),
         t, r = tst
         res = srch.solution(t, 24, 1000, False)
         if res != r:
             print 'Error for %s:\n\tmust be: %s\n\tgot: %s' % (s, r, res)
             sys.exit(1)
-        print 'passed %d of %d' % (i + 1, len(javares))
+        print 'passed'
+    print 'all %d tests passed' % len(javares)
