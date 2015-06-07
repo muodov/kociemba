@@ -73,7 +73,6 @@ class Search(object):
                 assert facelets[i] in colors
                 count[colors[facelets[i]]] += 1
         except Exception as e:
-            print e
             return "Error 1"
 
         for i in xrange(6):
@@ -173,7 +172,6 @@ class Search(object):
             )
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-            # print n, depthPhase1
             if self.minDistPhase1[n + 1] == 0 and n >= depthPhase1 - 5:
                 self.minDistPhase1[n + 1] = 10  # instead of 10 any value >5 is possible
                 if n == depthPhase1 - 1:
@@ -197,7 +195,6 @@ class Search(object):
         maxDepthPhase2 = min(10, maxDepth - depthPhase1)    # Allow only max 10 moves in phase2
         for i in xrange(depthPhase1):
             mv = 3 * self.ax[i] + self.po[i] - 1
-            # print i, mv, self.ax[i], self.po[i]
             self.URFtoDLF[i + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[i]][mv]
             self.FRtoBR[i + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[i]][mv]
             self.parity[i + 1] = CoordCube.parityMove[self.parity[i]][mv]
