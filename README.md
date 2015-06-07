@@ -1,5 +1,5 @@
 # kociemba
-This is a Python implementation of Kociemba's two-phase algorithm for solving Rubik's Cube.
+This is a Python implementation of Herbert Kociemba's two-phase algorithm for solving Rubik's Cube.
 Original Java implementation can be found here: http://kociemba.org/download.htm.
 
 This port is pretty straightforward (not to say dumb) and most probably can be optimized.
