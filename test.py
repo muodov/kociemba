@@ -315,6 +315,6 @@ if __name__ == '__main__':
         t, r = tst
         res = srch.solution(t, 24, 1000, False)
         if res != r:
-            logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (s, r, res))
+            logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
             sys.exit(1)
     logging.info('all %d tests passed' % len(javares))

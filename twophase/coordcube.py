@@ -15,8 +15,6 @@ def setPruning(table, index, value):
     else:
         table[index / 2] &= 0x0f | (value << 4)
 
-# balabala = open('/tmp/pyget.txt', 'a')
-
 def getPruning(table, index):
     """Extract pruning value"""
 
@@ -24,7 +22,6 @@ def getPruning(table, index):
         res = table[index / 2] & 0x0f
     else:
         res = (table[index / 2] & 0xf0) >> 4
-    # balabala.write("table[index/2] = %05X %05d, res = %05X %05d\n" % (table[index / 2], table[index / 2], res, res))
     return res
 
 def load_cachetable(name):
@@ -378,5 +375,3 @@ class CoordCube(object):
                             done += 1
             depth += 1
         dump_cachetable(Slice_Flip_Prun, 'Slice_Flip_Prun')
-
-# balabala.close()

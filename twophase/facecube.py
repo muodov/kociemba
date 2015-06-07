@@ -63,35 +63,35 @@ class FaceCube(object):
         for i in xrange(12):
             ccRet.ep[i] = UR    # and edges
 
-        for ordinali, i in enumerate(corner_values):
+        for i in corner_values:
             # get the colors of the cubie at corner i, starting with U/D
             for ori in xrange(3):
-                if (self.f[facelet_values.index(self.cornerFacelet[ordinali][ori])] == U
-                        or self.f[facelet_values.index(self.cornerFacelet[ordinali][ori])] == D):
+                if (self.f[self.cornerFacelet[i][ori]] == U
+                        or self.f[self.cornerFacelet[i][ori]] == D):
                     break
-            col1 = self.f[facelet_values.index(self.cornerFacelet[ordinali][(ori + 1) % 3])]
-            col2 = self.f[facelet_values.index(self.cornerFacelet[ordinali][(ori + 2) % 3])]
+            col1 = self.f[self.cornerFacelet[i][(ori + 1) % 3]]
+            col2 = self.f[self.cornerFacelet[i][(ori + 2) % 3]]
 
-            for ordinalj, j in enumerate(corner_values):
-                if (col1 == self.cornerColor[ordinalj][1]
-                        and col2 == self.cornerColor[ordinalj][2]):
+            for j in corner_values:
+                if (col1 == self.cornerColor[j][1]
+                        and col2 == self.cornerColor[j][2]):
                     # in cornerposition i we have cornercubie j
-                    ccRet.cp[ordinali] = j
-                    ccRet.co[ordinali] = ori % 3
+                    ccRet.cp[i] = j
+                    ccRet.co[i] = ori % 3
                     break
 
-        for ordinali, i in enumerate(edge_values):
-            for ordinalj, j in enumerate(edge_values):
-                if (self.f[facelet_values.index(self.edgeFacelet[ordinali][0])] == self.edgeColor[ordinalj][0]
-                        and self.f[facelet_values.index(self.edgeFacelet[ordinali][1])] == self.edgeColor[ordinalj][1]):
-                    ccRet.ep[ordinali] = j
-                    ccRet.eo[ordinali] = 0
+        for i in edge_values:
+            for j in edge_values:
+                if (self.f[self.edgeFacelet[i][0]] == self.edgeColor[j][0]
+                        and self.f[self.edgeFacelet[i][1]] == self.edgeColor[j][1]):
+                    ccRet.ep[i] = j
+                    ccRet.eo[i] = 0
                     break
 
-                if (self.f[facelet_values.index(self.edgeFacelet[ordinali][0])] == self.edgeColor[ordinalj][1]
-                        and self.f[facelet_values.index(self.edgeFacelet[ordinali][1])] == self.edgeColor[ordinalj][0]):
-                    ccRet.ep[ordinali] = j
-                    ccRet.eo[ordinali] = 1
+                if (self.f[self.edgeFacelet[i][0]] == self.edgeColor[j][1]
+                        and self.f[self.edgeFacelet[i][1]] == self.edgeColor[j][0]):
+                    ccRet.ep[i] = j
+                    ccRet.eo[i] = 1
                     break
 
         return ccRet
