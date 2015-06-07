@@ -310,11 +310,29 @@ if __name__ == '__main__':
 
     srch = twophase.search.Search()
 
-    for i, tst in enumerate(javares):
-        logging.info('running test %d of %d...' % (i + 1, len(javares)))
-        t, r = tst
-        res = srch.solution(t, 24, 1000, False)
-        if res != r:
-            logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
-            sys.exit(1)
-    logging.info('all %d tests passed' % len(javares))
+    if len(sys.argv) > 1:
+        fname = sys.argv[1]
+        logging.info('loading tests from %s', fname)
+        with open(fname) as f:
+            cnt = 0
+            t = f.readline()
+            while t:
+                logging.info('running test %d...' % (cnt + 1))
+                t = t.strip()
+                r = f.readline().strip()
+                res = srch.solution(t, 24, 1000, False).strip()
+                if res != r:
+                    logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
+                    sys.exit(1)
+                cnt += 1
+                t = f.readline()
+            logging.info('all %d tests passed' % cnt)
+    else:
+        for i, tst in enumerate(javares):
+            logging.info('running test %d of %d...' % (i + 1, len(javares)))
+            t, r = tst
+            res = srch.solution(t, 24, 1000, False)
+            if res != r:
+                logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
+                sys.exit(1)
+        logging.info('all %d tests passed' % len(javares))
