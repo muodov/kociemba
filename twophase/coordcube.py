@@ -1,7 +1,6 @@
 import logging
-import json
 import os.path
-# import cPickle
+import cPickle
 
 from .cubiecube import CubieCube, moveCube, getURtoDF
 
@@ -31,18 +30,15 @@ def getPruning(table, index):
 def load_cachetable(name):
     obj = None
     try:
-        with open(os.path.join(cache_dir, name + '.json')) as f:
-            # twistMove = cPickle.load(f)
-            obj = json.load(f)
+        with open(os.path.join(cache_dir, name + '.pkl')) as f:
+            obj = cPickle.load(f)
     except:
         log.warning('could not read cache for %s' % name, exc_info=True)
     return obj
 
 def dump_cachetable(obj, name):
-    with open(os.path.join(cache_dir, name + '.json'), 'w') as f:
-        # twistMove = cPickle.load(f)
-        json.dump(obj, f, separators=(',', ':'))
-        f.write('\n')
+    with open(os.path.join(cache_dir, name + '.pkl'), 'w') as f:
+        cPickle.dump(obj, f)
 
 
 class CoordCube(object):
