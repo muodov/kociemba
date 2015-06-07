@@ -1,7 +1,7 @@
 import sys
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-import twophase.search
+import kociemba.search
 
 # these results were produced by original Kociemba's Java implementation
 javares = [
@@ -308,7 +308,7 @@ javares = [
 
 if __name__ == '__main__':
 
-    srch = twophase.search.Search()
+    srch = kociemba.search.Search()
 
     if len(sys.argv) > 1:
         fname = sys.argv[1]
