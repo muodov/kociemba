@@ -10,21 +10,21 @@ cache_dir = os.path.join(os.path.dirname(__file__), 'prunetables')
 
 def setPruning(table, index, value):
     """Set pruning value in table. Two values are stored in one byte."""
-    if ((index & 1) == 0):
-        table[index / 2] &= 0xf0 | value
-    else:
-        table[index / 2] &= 0x0f | (value << 4)
-    # table[index] = value
+    # if ((index & 1) == 0):
+    #     table[index / 2] &= 0xf0 | value
+    # else:
+    #     table[index / 2] &= 0x0f | (value << 4)
+    table[index] = value & 0xf
 
 def getPruning(table, index):
     """Extract pruning value"""
 
-    if ((index & 1) == 0):
-        res = table[index / 2] & 0x0f
-    else:
-        res = (table[index / 2] & 0xf0) >> 4
-    return res
-    # return table[index]
+    # if ((index & 1) == 0):
+    #     res = table[index / 2] & 0x0f
+    # else:
+    #     res = (table[index / 2] & 0xf0) >> 4
+    # return res
+    return table[index] & 0xf
 
 def load_cachetable(name):
     obj = None
@@ -268,8 +268,8 @@ class CoordCube(object):
     log.info('Preparing pruning table for the permutation of the corners and the UD-slice edges in phase2.')
     Slice_URFtoDLF_Parity_Prun = load_cachetable('Slice_URFtoDLF_Parity_Prun')
     if not Slice_URFtoDLF_Parity_Prun:
-        Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY / 2)     # new byte[N_SLICE2 * N_URFtoDLF * N_PARITY / 2]
-        # Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY)
+        # Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY / 2)     # new byte[N_SLICE2 * N_URFtoDLF * N_PARITY / 2]
+        Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY)
         depth = 0
         setPruning(Slice_URFtoDLF_Parity_Prun, 0, 0)
         done = 1
@@ -303,8 +303,8 @@ class CoordCube(object):
     log.info('Preparing pruning table for the permutation of the edges in phase2.')
     Slice_URtoDF_Parity_Prun = load_cachetable('Slice_URtoDF_Parity_Prun')
     if not Slice_URtoDF_Parity_Prun:
-        Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY / 2)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
-        # Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
+        # Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY / 2)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
+        Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
         depth = 0
         setPruning(Slice_URtoDF_Parity_Prun, 0, 0)
         done = 1
@@ -337,8 +337,8 @@ class CoordCube(object):
     log.info('Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Twist_Prun = load_cachetable('Slice_Twist_Prun')
     if not Slice_Twist_Prun:
-        Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST / 2 + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
-        # Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
+        # Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST / 2 + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
+        Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
         depth = 0
         setPruning(Slice_Twist_Prun, 0, 0)
         done = 1
@@ -363,8 +363,8 @@ class CoordCube(object):
     log.info('Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Flip_Prun = load_cachetable('Slice_Flip_Prun')
     if not Slice_Flip_Prun:
-        Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP / 2)    # new byte[N_SLICE1 * N_FLIP / 2]
-        # Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP)    # new byte[N_SLICE1 * N_FLIP / 2]
+        # Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP / 2)    # new byte[N_SLICE1 * N_FLIP / 2]
+        Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP)    # new byte[N_SLICE1 * N_FLIP / 2]
         depth = 0
         setPruning(Slice_Flip_Prun, 0, 0)
         done = 1
