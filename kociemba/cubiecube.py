@@ -110,7 +110,7 @@ class CubieCube(object):
         for i in corner_values:
             cPerm.append(self.cp[b.cp[i]])
 
-            oriA = self.co[ordinal]
+            oriA = self.co[b.cp[i]]
             oriB = b.co[i]
             ori = 0
 
