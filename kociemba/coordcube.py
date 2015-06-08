@@ -29,17 +29,17 @@ def getPruning(table, index):
 def load_cachetable(name):
     obj = None
     try:
-        # with open(os.path.join(cache_dir, name + '.pkl')) as f:
-        #     obj = cPickle.load(f)
-        obj = numpy.load(os.path.join(cache_dir, name + '.npy'))
+        with open(os.path.join(cache_dir, name + '.pkl')) as f:
+            obj = cPickle.load(f)
+        # obj = numpy.load(os.path.join(cache_dir, name + '.npy'))
     except IOError as e:
         log.warning('could not read cache for %s: %s. Recalculating it...', name, e)
     return obj
 
 def dump_cachetable(obj, name):
-    # with open(os.path.join(cache_dir, name + '.pkl'), 'w') as f:
-    #     cPickle.dump(obj, f)
-    numpy.save(os.path.join(cache_dir, name + '.npy'), obj)
+    with open(os.path.join(cache_dir, name + '.pkl'), 'w') as f:
+        cPickle.dump(obj, f)
+    # numpy.save(os.path.join(cache_dir, name + '.npy'), obj)
 
 
 class CoordCube(object):
