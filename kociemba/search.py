@@ -157,9 +157,9 @@ class Search(object):
             # +++++++++++++ compute new coordinates and new minDistPhase1 ++++++++++
             # if minDistPhase1 =0, the H subgroup is reached
             mv = 3 * self.ax[n] + self.po[n] - 1
-            self.flip[n + 1] = CoordCube.flipMove[self.flip[n]][mv]
-            self.twist[n + 1] = CoordCube.twistMove[self.twist[n]][mv]
-            self.slice[n + 1] = CoordCube.FRtoBR_Move[self.slice[n] * 24][mv] / 24
+            self.flip[n + 1] = CoordCube.flipMove[self.flip[n], mv]
+            self.twist[n + 1] = CoordCube.twistMove[self.twist[n], mv]
+            self.slice[n + 1] = CoordCube.FRtoBR_Move[self.slice[n] * 24, mv] / 24
             self.minDistPhase1[n + 1] = max(
                 getPruning(
                     CoordCube.Slice_Flip_Prun,
@@ -195,9 +195,9 @@ class Search(object):
         maxDepthPhase2 = min(10, maxDepth - depthPhase1)    # Allow only max 10 moves in phase2
         for i in xrange(depthPhase1):
             mv = 3 * self.ax[i] + self.po[i] - 1
-            self.URFtoDLF[i + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[i]][mv]
-            self.FRtoBR[i + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[i]][mv]
-            self.parity[i + 1] = CoordCube.parityMove[self.parity[i]][mv]
+            self.URFtoDLF[i + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[i], mv]
+            self.FRtoBR[i + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[i], mv]
+            self.parity[i + 1] = CoordCube.parityMove[self.parity[i], mv]
 
         d1 = getPruning(
             CoordCube.Slice_URFtoDLF_Parity_Prun,
@@ -208,10 +208,10 @@ class Search(object):
 
         for i in xrange(depthPhase1):
             mv = 3 * self.ax[i] + self.po[i] - 1
-            self.URtoUL[i + 1] = CoordCube.URtoUL_Move[self.URtoUL[i]][mv]
-            self.UBtoDF[i + 1] = CoordCube.UBtoDF_Move[self.UBtoDF[i]][mv]
+            self.URtoUL[i + 1] = CoordCube.URtoUL_Move[self.URtoUL[i], mv]
+            self.UBtoDF[i + 1] = CoordCube.UBtoDF_Move[self.UBtoDF[i], mv]
 
-        self.URtoDF[depthPhase1] = CoordCube.MergeURtoULandUBtoDF[self.URtoUL[depthPhase1]][self.UBtoDF[depthPhase1]]
+        self.URtoDF[depthPhase1] = CoordCube.MergeURtoULandUBtoDF[self.URtoUL[depthPhase1], self.UBtoDF[depthPhase1]]
 
         d2 = getPruning(
             CoordCube.Slice_URtoDF_Parity_Prun,
@@ -290,10 +290,10 @@ class Search(object):
             # +++++++++++++ compute new coordinates and new minDist ++++++++++
             mv = 3 * self.ax[n] + self.po[n] - 1
 
-            self.URFtoDLF[n + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[n]][mv]
-            self.FRtoBR[n + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[n]][mv]
-            self.parity[n + 1] = CoordCube.parityMove[self.parity[n]][mv]
-            self.URtoDF[n + 1] = CoordCube.URtoDF_Move[self.URtoDF[n]][mv]
+            self.URFtoDLF[n + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[n], mv]
+            self.FRtoBR[n + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[n], mv]
+            self.parity[n + 1] = CoordCube.parityMove[self.parity[n], mv]
+            self.URtoDF[n + 1] = CoordCube.URtoDF_Move[self.URtoDF[n], mv]
 
             self.minDistPhase2[n + 1] = max(
                 getPruning(

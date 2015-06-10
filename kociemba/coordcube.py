@@ -150,10 +150,10 @@ class CoordCube(object):
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Parity of the corner permutation. This is the same as the parity for the edge permutation of a valid cube.
     # parity has values 0 and 1
-    parityMove = [
+    parityMove = numpy.array([
         [ 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 ],
         [ 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 ],
-    ]
+    ], dtype='int8')
 
     # ***********************************Phase 1 and 2 movetable********************************************************
     log.info('Preparing move table for the four UD-slice edges FR, FL, Bl and BR')
