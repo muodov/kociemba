@@ -46,12 +46,12 @@ int check_cached_table(const char* name, void* ptr, int len)
     char fname[100] = "prunetables/";
     strncat(fname, name, 30);
     if (access(fname, F_OK | R_OK) != -1) {
-        printf("Found cache for %s. Loading...", name);
+        fprintf(stderr, "Found cache for %s. Loading...", name);
         read_from_file(ptr, len, name);
-        printf("done.\n");
+        fprintf(stderr, "done.\n");
         return 0;
     } else {
-        printf("Cache for %s was not found. Recalculating.\n", name);
+        fprintf(stderr, "Cache for %s was not found. Recalculating.\n", name);
         return -1;
     }
 }

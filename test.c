@@ -11,5 +11,5 @@ int main(int argc, char **argv)
         0
     );
     printf("%s\n", sol);
-    free(sol);
+    //free(sol);
 }

@@ -175,11 +175,11 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator)
             if (n == depthPhase1 - 1 && (s = totalDepth(search, depthPhase1, maxDepth)) >= 0) {
                 if (s == depthPhase1
                         || (search->ax[depthPhase1 - 1] != search->ax[depthPhase1] && search->ax[depthPhase1 - 1] != search->ax[depthPhase1] + 3)) {
-                    free(fc);
-                    free(cc);
-                    free(c);
+                    free((void*) fc);
+                    free((void*) cc);
+                    free((void*) c);
                     char* res = useSeparator ? solutionToString(search, s, depthPhase1) : solutionToString(search, s, -1);
-                    free(search);
+                    //free((void*) search);
                     return res;
                 }
             }
