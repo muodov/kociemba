@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "coordcube.h"
 #include "cubiecube.h"
 
@@ -38,6 +39,21 @@ void move(coordcube_t* coordcube, int m)
     if (coordcube->URtoUL < 336 && coordcube->UBtoDF < 336)// updated only if UR,UF,UL,UB,DR,DF
         // are not in UD-slice
         coordcube->URtoDF = MergeURtoULandUBtoDF[coordcube->URtoUL][coordcube->UBtoDF];
+}
+
+int check_cached_table(const char* name, void* ptr, int len)
+{
+    char fname[100] = "prunetables/";
+    strncat(fname, name, 30);
+    if (access(fname, F_OK | R_OK) != -1) {
+        printf("Found cache for %s. Loading...", name);
+        read_from_file(ptr, len, name);
+        printf("done.\n");
+        return 0;
+    } else {
+        printf("Cache for %s was not found. Recalculating.\n", name);
+        return -1;
+    }
 }
 
 void read_from_file(void* ptr, int len, const char* name)
@@ -86,244 +102,272 @@ coordcube_t* get_coordcube(cubiecube_t* cubiecube)
 
 void initPruning()
 {
-    cubiecube_t* a = get_cubiecube();
-    for (short i = 0; i < N_TWIST; i++) {
-        setTwist(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
+    cubiecube_t* a;
+
+    if(check_cached_table("twistMove", (void*) twistMove, N_TWIST * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_TWIST; i++) {
+            setTwist(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    cornerMultiply(a, &moveCube[j]);
+                    twistMove[i][3 * j + k] = getTwist(a);
+                }
+                cornerMultiply(a, &moveCube[j]);// 4. faceturn restores
+            }
+        }
+        free(a);
+        dump_table_2d((short*) twistMove, N_TWIST, N_MOVE, "twistMove");
+    }
+
+    if(check_cached_table("flipMove", (void*) flipMove, N_FLIP * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_FLIP; i++) {
+            setFlip(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    edgeMultiply(a, &moveCube[j]);
+                    flipMove[i][3 * j + k] = getFlip(a);
+                }
+                edgeMultiply(a, &moveCube[j]);
+            }
+        }
+        free(a);
+        dump_table_2d((short*) flipMove, N_FLIP, N_MOVE, "flipMove");
+    }
+
+    if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, N_FRtoBR * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_FRtoBR; i++) {
+            setFRtoBR(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    edgeMultiply(a, &moveCube[j]);
+                    FRtoBR_Move[i][3 * j + k] = getFRtoBR(a);
+                }
+                edgeMultiply(a, &moveCube[j]);
+            }
+        }
+        free(a);
+        dump_table_2d((short*) FRtoBR_Move, N_FRtoBR, N_MOVE, "FRtoBR_Move");
+    }
+
+    if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, N_URFtoDLF * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_URFtoDLF; i++) {
+            setURFtoDLF(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    cornerMultiply(a, &moveCube[j]);
+                    URFtoDLF_Move[i][3 * j + k] = getURFtoDLF(a);
+                }
                 cornerMultiply(a, &moveCube[j]);
-                twistMove[i][3 * j + k] = getTwist(a);
             }
-            cornerMultiply(a, &moveCube[j]);// 4. faceturn restores
         }
+        free(a);
+        dump_table_2d((short*) URFtoDLF_Move, N_URFtoDLF, N_MOVE, "URFtoDLF_Move");
     }
-    free(a);
-    dump_table_2d((short*) twistMove, N_TWIST, N_MOVE, "twistMove");
 
-    a = get_cubiecube();
-    for (short i = 0; i < N_FLIP; i++) {
-        setFlip(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
+    if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, N_URtoDF * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_URtoDF; i++) {
+            setURtoDF(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    edgeMultiply(a, &moveCube[j]);
+                    URtoDF_Move[i][3 * j + k] = (short) getURtoDF(a);
+                    // Table values are only valid for phase 2 moves!
+                    // For phase 1 moves, casting to short is not possible.
+                }
                 edgeMultiply(a, &moveCube[j]);
-                flipMove[i][3 * j + k] = getFlip(a);
             }
-            edgeMultiply(a, &moveCube[j]);
         }
+        free(a);
+        dump_table_2d((short*) URtoDF_Move, N_URtoDF, N_MOVE, "URtoDF_Move");
     }
-    free(a);
-    dump_table_2d((short*) flipMove, N_FLIP, N_MOVE, "flipMove");
 
-    a = get_cubiecube();
-    for (short i = 0; i < N_FRtoBR; i++) {
-        setFRtoBR(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
+    if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, N_URtoUL * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_URtoUL; i++) {
+            setURtoUL(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    edgeMultiply(a, &moveCube[j]);
+                    URtoUL_Move[i][3 * j + k] = getURtoUL(a);
+                }
                 edgeMultiply(a, &moveCube[j]);
-                FRtoBR_Move[i][3 * j + k] = getFRtoBR(a);
             }
-            edgeMultiply(a, &moveCube[j]);
         }
+        free(a);
+        dump_table_2d((short*) URtoUL_Move, N_URtoUL, N_MOVE, "URtoUL_Move");
     }
-    free(a);
-    dump_table_2d((short*) FRtoBR_Move, N_FRtoBR, N_MOVE, "FRtoBR_Move");
 
-    a = get_cubiecube();
-    for (short i = 0; i < N_URFtoDLF; i++) {
-        setURFtoDLF(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
-                cornerMultiply(a, &moveCube[j]);
-                URFtoDLF_Move[i][3 * j + k] = getURFtoDLF(a);
-            }
-            cornerMultiply(a, &moveCube[j]);
-        }
-    }
-    free(a);
-    dump_table_2d((short*) URFtoDLF_Move, N_URFtoDLF, N_MOVE, "URFtoDLF_Move");
-
-    a = get_cubiecube();
-    for (short i = 0; i < N_URtoDF; i++) {
-        setURtoDF(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
+    if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, N_UBtoDF * N_MOVE * sizeof(short)) != 0) {
+        a = get_cubiecube();
+        for (short i = 0; i < N_UBtoDF; i++) {
+            setUBtoDF(a, i);
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 3; k++) {
+                    edgeMultiply(a, &moveCube[j]);
+                    UBtoDF_Move[i][3 * j + k] = getUBtoDF(a);
+                }
                 edgeMultiply(a, &moveCube[j]);
-                URtoDF_Move[i][3 * j + k] = (short) getURtoDF(a);
-                // Table values are only valid for phase 2 moves!
-                // For phase 1 moves, casting to short is not possible.
             }
-            edgeMultiply(a, &moveCube[j]);
         }
+        free(a);
+        dump_table_2d((short*) UBtoDF_Move, N_UBtoDF, N_MOVE, "UBtoDF_Move");
     }
-    free(a);
-    dump_table_2d((short*) URtoDF_Move, N_URtoDF, N_MOVE, "URtoDF_Move");
 
-    a = get_cubiecube();
-    for (short i = 0; i < N_URtoUL; i++) {
-        setURtoUL(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
-                edgeMultiply(a, &moveCube[j]);
-                URtoUL_Move[i][3 * j + k] = getURtoUL(a);
+    if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, 336 * 336 * sizeof(short)) != 0) {
+        // for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
+        // UD-slice and the index is <20160
+        for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
+            for (short uBtoDF = 0; uBtoDF < 336; uBtoDF++) {
+                MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = (short) getURtoDF_standalone(uRtoUL, uBtoDF);
             }
-            edgeMultiply(a, &moveCube[j]);
         }
+        dump_table_2d((short*) MergeURtoULandUBtoDF, 336, 336, "MergeURtoULandUBtoDF");
     }
-    free(a);
-    dump_table_2d((short*) URtoUL_Move, N_URtoUL, N_MOVE, "URtoUL_Move");
 
-    a = get_cubiecube();
-    for (short i = 0; i < N_UBtoDF; i++) {
-        setUBtoDF(a, i);
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 3; k++) {
-                edgeMultiply(a, &moveCube[j]);
-                UBtoDF_Move[i][3 * j + k] = getUBtoDF(a);
-            }
-            edgeMultiply(a, &moveCube[j]);
-        }
-    }
-    free(a);
-    dump_table_2d((short*) UBtoDF_Move, N_UBtoDF, N_MOVE, "UBtoDF_Move");
+    int depth, done;
 
-    // for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
-    // UD-slice and the index is <20160
-    for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
-        for (short uBtoDF = 0; uBtoDF < 336; uBtoDF++) {
-            MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = (short) getURtoDF_standalone(uRtoUL, uBtoDF);
-        }
-    }
-    dump_table_2d((short*) MergeURtoULandUBtoDF, 336, 336, "MergeURtoULandUBtoDF");
-
-    for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
-        Slice_URFtoDLF_Parity_Prun[i] = -1;
-    int depth = 0;
-    setPruning(Slice_URFtoDLF_Parity_Prun, 0, (char) 0);
-    int done = 1;
-    while (done != N_SLICE2 * N_URFtoDLF * N_PARITY) {
-        for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY; i++) {
-            int parity = i % 2;
-            int URFtoDLF = (i / 2) / N_SLICE2;
-            int slice = (i / 2) % N_SLICE2;
-            if (getPruning(Slice_URFtoDLF_Parity_Prun, i) == depth) {
-                for (int j = 0; j < 18; j++) {
-                    int newSlice;
-                    int newURFtoDLF;
-                    int newParity;
-                    switch (j) {
-                    case 3:
-                    case 5:
-                    case 6:
-                    case 8:
-                    case 12:
-                    case 14:
-                    case 15:
-                    case 17:
-                        continue;
-                    default:
-                        newSlice = FRtoBR_Move[slice][j];
-                        newURFtoDLF = URFtoDLF_Move[URFtoDLF][j];
-                        newParity = parityMove[parity][j];
-                        if (getPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity) == 0x0f) {
-                            setPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity,
-                                    (char) (depth + 1));
-                            done++;
+    if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, N_SLICE2 * N_URFtoDLF * N_PARITY / 2) != 0) {
+        for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
+            Slice_URFtoDLF_Parity_Prun[i] = -1;
+        depth = 0;
+        setPruning(Slice_URFtoDLF_Parity_Prun, 0, (char) 0);
+        done = 1;
+        while (done != N_SLICE2 * N_URFtoDLF * N_PARITY) {
+            for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY; i++) {
+                int parity = i % 2;
+                int URFtoDLF = (i / 2) / N_SLICE2;
+                int slice = (i / 2) % N_SLICE2;
+                if (getPruning(Slice_URFtoDLF_Parity_Prun, i) == depth) {
+                    for (int j = 0; j < 18; j++) {
+                        int newSlice;
+                        int newURFtoDLF;
+                        int newParity;
+                        switch (j) {
+                        case 3:
+                        case 5:
+                        case 6:
+                        case 8:
+                        case 12:
+                        case 14:
+                        case 15:
+                        case 17:
+                            continue;
+                        default:
+                            newSlice = FRtoBR_Move[slice][j];
+                            newURFtoDLF = URFtoDLF_Move[URFtoDLF][j];
+                            newParity = parityMove[parity][j];
+                            if (getPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity) == 0x0f) {
+                                setPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity,
+                                        (char) (depth + 1));
+                                done++;
+                            }
                         }
                     }
                 }
             }
+            depth++;
         }
-        depth++;
+        dump_table_1d((char*) Slice_URFtoDLF_Parity_Prun, N_SLICE2 * N_URFtoDLF * N_PARITY / 2, "Slice_URFtoDLF_Parity_Prun");
     }
-    dump_table_1d((char*) Slice_URFtoDLF_Parity_Prun, N_SLICE2 * N_URFtoDLF * N_PARITY / 2, "Slice_URFtoDLF_Parity_Prun");
 
-    for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
-        Slice_URtoDF_Parity_Prun[i] = -1;
-    depth = 0;
-    setPruning(Slice_URtoDF_Parity_Prun, 0, (char) 0);
-    done = 1;
-    while (done != N_SLICE2 * N_URtoDF * N_PARITY) {
-        for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++) {
-            int parity = i % 2;
-            int URtoDF = (i / 2) / N_SLICE2;
-            int slice = (i / 2) % N_SLICE2;
-            if (getPruning(Slice_URtoDF_Parity_Prun, i) == depth) {
-                for (int j = 0; j < 18; j++) {
-                    int newSlice;
-                    int newURtoDF;
-                    int newParity;
-                    switch (j) {
-                    case 3:
-                    case 5:
-                    case 6:
-                    case 8:
-                    case 12:
-                    case 14:
-                    case 15:
-                    case 17:
-                        continue;
-                    default:
-                        newSlice = FRtoBR_Move[slice][j];
-                        newURtoDF = URtoDF_Move[URtoDF][j];
-                        newParity = parityMove[parity][j];
-                        if (getPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity) == 0x0f) {
-                            setPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity,
-                                    (char) (depth + 1));
-                            done++;
+    if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, N_SLICE2 * N_URtoDF * N_PARITY / 2) != 0) {
+        for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
+            Slice_URtoDF_Parity_Prun[i] = -1;
+        depth = 0;
+        setPruning(Slice_URtoDF_Parity_Prun, 0, (char) 0);
+        done = 1;
+        while (done != N_SLICE2 * N_URtoDF * N_PARITY) {
+            for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++) {
+                int parity = i % 2;
+                int URtoDF = (i / 2) / N_SLICE2;
+                int slice = (i / 2) % N_SLICE2;
+                if (getPruning(Slice_URtoDF_Parity_Prun, i) == depth) {
+                    for (int j = 0; j < 18; j++) {
+                        int newSlice;
+                        int newURtoDF;
+                        int newParity;
+                        switch (j) {
+                        case 3:
+                        case 5:
+                        case 6:
+                        case 8:
+                        case 12:
+                        case 14:
+                        case 15:
+                        case 17:
+                            continue;
+                        default:
+                            newSlice = FRtoBR_Move[slice][j];
+                            newURtoDF = URtoDF_Move[URtoDF][j];
+                            newParity = parityMove[parity][j];
+                            if (getPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity) == 0x0f) {
+                                setPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity,
+                                        (char) (depth + 1));
+                                done++;
+                            }
                         }
                     }
                 }
             }
+            depth++;
         }
-        depth++;
+        dump_table_1d((char*) Slice_URtoDF_Parity_Prun, N_SLICE2 * N_URtoDF * N_PARITY / 2, "Slice_URtoDF_Parity_Prun");
     }
-    dump_table_1d((char*) Slice_URtoDF_Parity_Prun, N_SLICE2 * N_URtoDF * N_PARITY / 2, "Slice_URtoDF_Parity_Prun");
     
-    for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
-        Slice_Twist_Prun[i] = -1;
-    depth = 0;
-    setPruning(Slice_Twist_Prun, 0, (char) 0);
-    done = 1;
-    while (done != N_SLICE1 * N_TWIST) {
-        for (int i = 0; i < N_SLICE1 * N_TWIST; i++) {
-            int twist = i / N_SLICE1, slice = i % N_SLICE1;
-            if (getPruning(Slice_Twist_Prun, i) == depth) {
-                for (int j = 0; j < 18; j++) {
-                    int newSlice = FRtoBR_Move[slice * 24][j] / 24;
-                    int newTwist = twistMove[twist][j];
-                    if (getPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice) == 0x0f) {
-                        setPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice, (char) (depth + 1));
-                        done++;
+    if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, N_SLICE1 * N_TWIST / 2 + 1) != 0) {
+        for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
+            Slice_Twist_Prun[i] = -1;
+        depth = 0;
+        setPruning(Slice_Twist_Prun, 0, (char) 0);
+        done = 1;
+        while (done != N_SLICE1 * N_TWIST) {
+            for (int i = 0; i < N_SLICE1 * N_TWIST; i++) {
+                int twist = i / N_SLICE1, slice = i % N_SLICE1;
+                if (getPruning(Slice_Twist_Prun, i) == depth) {
+                    for (int j = 0; j < 18; j++) {
+                        int newSlice = FRtoBR_Move[slice * 24][j] / 24;
+                        int newTwist = twistMove[twist][j];
+                        if (getPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice) == 0x0f) {
+                            setPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice, (char) (depth + 1));
+                            done++;
+                        }
                     }
                 }
             }
+            depth++;
         }
-        depth++;
+        dump_table_1d((char*) Slice_Twist_Prun, N_SLICE1 * N_TWIST / 2 + 1, "Slice_Twist_Prun");
     }
-    dump_table_1d((char*) Slice_Twist_Prun, N_SLICE1 * N_TWIST / 2 + 1, "Slice_Twist_Prun");
 
-    for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
-        Slice_Flip_Prun[i] = -1;
-    depth = 0;
-    setPruning(Slice_Flip_Prun, 0, (char) 0);
-    done = 1;
-    while (done != N_SLICE1 * N_FLIP) {
-        for (int i = 0; i < N_SLICE1 * N_FLIP; i++) {
-            int flip = i / N_SLICE1, slice = i % N_SLICE1;
-            if (getPruning(Slice_Flip_Prun, i) == depth) {
-                for (int j = 0; j < 18; j++) {
-                    int newSlice = FRtoBR_Move[slice * 24][j] / 24;
-                    int newFlip = flipMove[flip][j];
-                    if (getPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice) == 0x0f) {
-                        setPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice, (char) (depth + 1));
-                        done++;
+    if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, N_SLICE1 * N_FLIP / 2) != 0) {
+        for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
+            Slice_Flip_Prun[i] = -1;
+        depth = 0;
+        setPruning(Slice_Flip_Prun, 0, (char) 0);
+        done = 1;
+        while (done != N_SLICE1 * N_FLIP) {
+            for (int i = 0; i < N_SLICE1 * N_FLIP; i++) {
+                int flip = i / N_SLICE1, slice = i % N_SLICE1;
+                if (getPruning(Slice_Flip_Prun, i) == depth) {
+                    for (int j = 0; j < 18; j++) {
+                        int newSlice = FRtoBR_Move[slice * 24][j] / 24;
+                        int newFlip = flipMove[flip][j];
+                        if (getPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice) == 0x0f) {
+                            setPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice, (char) (depth + 1));
+                            done++;
+                        }
                     }
                 }
             }
+            depth++;
         }
-        depth++;
+        dump_table_1d((char*) Slice_Flip_Prun, N_SLICE1 * N_FLIP / 2, "Slice_Flip_Prun");
     }
-    dump_table_1d((char*) Slice_Flip_Prun, N_SLICE1 * N_FLIP / 2, "Slice_Flip_Prun");
 
     PRUNING_INITED = 1;
 }

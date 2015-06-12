@@ -180,6 +180,7 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator)
                     free(c);
                     char* res = useSeparator ? solutionToString(search, s, depthPhase1) : solutionToString(search, s, -1);
                     free(search);
+                    return res;
                 }
             }
 

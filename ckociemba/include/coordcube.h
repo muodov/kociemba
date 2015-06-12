@@ -109,6 +109,7 @@ char getPruning(char *table, int index);
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube);
 void move(coordcube_t* coordcube, int m);
+int check_cached_table(const char* name, void* ptr, int len);
 void dump_to_file(void* ptr, int len, const char* name);
 void dump_table_2d(short* table, int n, int m, const char* name);
 void dump_table_1d(char* table, int n, const char* name);
