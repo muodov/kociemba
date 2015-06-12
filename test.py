@@ -1,7 +1,8 @@
 import sys
+import subprocess
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-import kociemba.search
+# import kociemba.search
 
 # these results were produced by original Kociemba's Java implementation
 javares = [
@@ -308,7 +309,7 @@ javares = [
 
 if __name__ == '__main__':
 
-    srch = kociemba.search.Search()
+    cmd = './solve'
 
     if len(sys.argv) > 1:
         fname = sys.argv[1]
@@ -320,7 +321,7 @@ if __name__ == '__main__':
                 logging.info('running test %d...' % (cnt + 1))
                 t = t.strip()
                 r = f.readline().strip()
-                res = srch.solution(t, 24, 1000, False).strip()
+                res = subprocess.check_output([cmd, t]).strip()
                 if res != r:
                     logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
                     sys.exit(1)
@@ -331,7 +332,7 @@ if __name__ == '__main__':
         for i, tst in enumerate(javares):
             logging.info('running test %d of %d...' % (i + 1, len(javares)))
             t, r = tst
-            res = srch.solution(t, 24, 1000, False)
+            res = subprocess.check_output([cmd, t]).strip()
             if res != r:
                 logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
                 sys.exit(1)

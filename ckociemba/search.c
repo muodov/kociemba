@@ -8,7 +8,7 @@
 
 char* solutionToString(search_t* search, int length, int depthPhase1)
 {
-    char* s = (char*) calloc(length * 3 + 3, 1);
+    char* s = (char*) calloc(length * 3 + 5, 1);
     int cur = 0;
     for (int i = 0; i < length; i++) {
         switch (search->ax[i]) {
@@ -44,9 +44,10 @@ char* solutionToString(search_t* search, int length, int depthPhase1)
             s[cur++] = ' ';
             break;
         }
-        if (i == depthPhase1 - 1)
+        if (i == depthPhase1 - 1) {
             s[cur++] = '.';
             s[cur++] = ' ';
+        }
     }
     return s;
 }
@@ -178,8 +179,13 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator)
                     free((void*) fc);
                     free((void*) cc);
                     free((void*) c);
-                    char* res = useSeparator ? solutionToString(search, s, depthPhase1) : solutionToString(search, s, -1);
-                    //free((void*) search);
+                    char* res;
+                    if (useSeparator) {
+                        res = solutionToString(search, s, depthPhase1);
+                    } else {
+                        res = solutionToString(search, s, -1);
+                    }
+                    free((void*) search);
                     return res;
                 }
             }
