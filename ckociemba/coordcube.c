@@ -74,16 +74,6 @@ void dump_to_file(void* ptr, int len, const char* name)
     fclose(f);
 }
 
-void dump_table_2d(short* table, int n, int m, const char* name)
-{
-    dump_to_file((void *) table, n * m * sizeof(short), name);
-}
-
-void dump_table_1d(char* table, int n, const char* name)
-{
-    dump_to_file((void *) table, n, name);
-}
-
 coordcube_t* get_coordcube(cubiecube_t* cubiecube)
 {
     coordcube_t* result = (coordcube_t *) calloc(1, sizeof(coordcube_t));
@@ -104,7 +94,7 @@ void initPruning()
 {
     cubiecube_t* a;
 
-    if(check_cached_table("twistMove", (void*) twistMove, N_TWIST * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("twistMove", (void*) twistMove, sizeof(twistMove)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_TWIST; i++) {
             setTwist(a, i);
@@ -117,10 +107,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) twistMove, N_TWIST, N_MOVE, "twistMove");
+        dump_to_file((void*) twistMove, sizeof(twistMove), "twistMove");
     }
 
-    if(check_cached_table("flipMove", (void*) flipMove, N_FLIP * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("flipMove", (void*) flipMove, sizeof(flipMove)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_FLIP; i++) {
             setFlip(a, i);
@@ -133,10 +123,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) flipMove, N_FLIP, N_MOVE, "flipMove");
+        dump_to_file((void*) flipMove, sizeof(flipMove), "flipMove");
     }
 
-    if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, N_FRtoBR * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, sizeof(FRtoBR_Move)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_FRtoBR; i++) {
             setFRtoBR(a, i);
@@ -149,10 +139,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) FRtoBR_Move, N_FRtoBR, N_MOVE, "FRtoBR_Move");
+        dump_to_file((void*) FRtoBR_Move, sizeof(FRtoBR_Move), "FRtoBR_Move");
     }
 
-    if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, N_URFtoDLF * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, sizeof(URFtoDLF_Move)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URFtoDLF; i++) {
             setURFtoDLF(a, i);
@@ -165,10 +155,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) URFtoDLF_Move, N_URFtoDLF, N_MOVE, "URFtoDLF_Move");
+        dump_to_file((void*) URFtoDLF_Move, sizeof(URFtoDLF_Move), "URFtoDLF_Move");
     }
 
-    if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, N_URtoDF * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, sizeof(URtoDF_Move)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URtoDF; i++) {
             setURtoDF(a, i);
@@ -183,10 +173,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) URtoDF_Move, N_URtoDF, N_MOVE, "URtoDF_Move");
+        dump_to_file((void*) URtoDF_Move, sizeof(URtoDF_Move), "URtoDF_Move");
     }
 
-    if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, N_URtoUL * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, sizeof(URtoUL_Move)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URtoUL; i++) {
             setURtoUL(a, i);
@@ -199,10 +189,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) URtoUL_Move, N_URtoUL, N_MOVE, "URtoUL_Move");
+        dump_to_file((void*) URtoUL_Move, sizeof(URtoUL_Move), "URtoUL_Move");
     }
 
-    if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, N_UBtoDF * N_MOVE * sizeof(short)) != 0) {
+    if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, sizeof(UBtoDF_Move)) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_UBtoDF; i++) {
             setUBtoDF(a, i);
@@ -215,10 +205,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_table_2d((short*) UBtoDF_Move, N_UBtoDF, N_MOVE, "UBtoDF_Move");
+        dump_to_file((void*) UBtoDF_Move, sizeof(UBtoDF_Move), "UBtoDF_Move");
     }
 
-    if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, 336 * 336 * sizeof(short)) != 0) {
+    if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF)) != 0) {
         // for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
         // UD-slice and the index is <20160
         for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
@@ -226,12 +216,12 @@ void initPruning()
                 MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = (short) getURtoDF_standalone(uRtoUL, uBtoDF);
             }
         }
-        dump_table_2d((short*) MergeURtoULandUBtoDF, 336, 336, "MergeURtoULandUBtoDF");
+        dump_to_file((void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), "MergeURtoULandUBtoDF");
     }
 
     int depth, done;
 
-    if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, N_SLICE2 * N_URFtoDLF * N_PARITY / 2) != 0) {
+    if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun)) != 0) {
         for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
             Slice_URFtoDLF_Parity_Prun[i] = -1;
         depth = 0;
@@ -272,10 +262,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_table_1d((char*) Slice_URFtoDLF_Parity_Prun, N_SLICE2 * N_URFtoDLF * N_PARITY / 2, "Slice_URFtoDLF_Parity_Prun");
+        dump_to_file((void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), "Slice_URFtoDLF_Parity_Prun");
     }
 
-    if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, N_SLICE2 * N_URtoDF * N_PARITY / 2) != 0) {
+    if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun)) != 0) {
         for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
             Slice_URtoDF_Parity_Prun[i] = -1;
         depth = 0;
@@ -316,10 +306,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_table_1d((char*) Slice_URtoDF_Parity_Prun, N_SLICE2 * N_URtoDF * N_PARITY / 2, "Slice_URtoDF_Parity_Prun");
+        dump_to_file((void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), "Slice_URtoDF_Parity_Prun");
     }
     
-    if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, N_SLICE1 * N_TWIST / 2 + 1) != 0) {
+    if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun)) != 0) {
         for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
             Slice_Twist_Prun[i] = -1;
         depth = 0;
@@ -341,10 +331,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_table_1d((char*) Slice_Twist_Prun, N_SLICE1 * N_TWIST / 2 + 1, "Slice_Twist_Prun");
+        dump_to_file((void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun), "Slice_Twist_Prun");
     }
 
-    if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, N_SLICE1 * N_FLIP / 2) != 0) {
+    if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun)) != 0) {
         for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
             Slice_Flip_Prun[i] = -1;
         depth = 0;
@@ -366,7 +356,7 @@ void initPruning()
             }
             depth++;
         }
-        dump_table_1d((char*) Slice_Flip_Prun, N_SLICE1 * N_FLIP / 2, "Slice_Flip_Prun");
+        dump_to_file((void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun), "Slice_Flip_Prun");
     }
 
     PRUNING_INITED = 1;
