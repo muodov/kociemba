@@ -1,4 +1,5 @@
 import sys
+import os
 import subprocess
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -321,7 +322,7 @@ if __name__ == '__main__':
                 logging.info('running test %d...' % (cnt + 1))
                 t = t.strip()
                 r = f.readline().strip()
-                res = subprocess.check_output([cmd, t]).strip()
+                res = subprocess.check_output([cmd, t], stderr=open(os.devnull, 'wb')).strip()
                 if res != r:
                     logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
                     sys.exit(1)
@@ -332,8 +333,8 @@ if __name__ == '__main__':
         for i, tst in enumerate(javares):
             logging.info('running test %d of %d...' % (i + 1, len(javares)))
             t, r = tst
-            res = subprocess.check_output([cmd, t]).strip()
-            if res != r:
+            res = subprocess.check_output([cmd, t], stderr=open(os.devnull, 'wb')).strip()
+            if res != r.strip():
                 logging.error('Error for %s:\n\tmust be: %s\n\tgot: %s' % (t, `r`, `res`))
                 sys.exit(1)
         logging.info('all %d tests passed' % len(javares))
