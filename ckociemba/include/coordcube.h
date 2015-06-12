@@ -37,19 +37,16 @@ typedef struct {
 // Move table for the twists of the corners
 // twist < 2187 in phase 2.
 // twist = 0 in phase 2.
-short twistMove[N_TWIST][N_MOVE];
+extern short twistMove[N_TWIST][N_MOVE];
 
 // Move table for the flips of the edges
 // flip < 2048 in phase 1
 // flip = 0 in phase 2.
-short flipMove[N_FLIP][N_MOVE];
+extern short flipMove[N_FLIP][N_MOVE];
 
 // Parity of the corner permutation. This is the same as the parity for the edge permutation of a valid cube.
 // parity has values 0 and 1
-short parityMove[2][18] = {
-    { 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
-    { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 }
-};
+extern short parityMove[2][18];
 
 // ***********************************Phase 1 and 2 movetable********************************************************
 
@@ -57,72 +54,58 @@ short parityMove[2][18] = {
 // FRtoBRMove < 11880 in phase 1
 // FRtoBRMove < 24 in phase 2
 // FRtoBRMove = 0 for solved cube
-short FRtoBR_Move[N_FRtoBR][N_MOVE];
+extern short FRtoBR_Move[N_FRtoBR][N_MOVE];
 
 // Move table for permutation of six corners. The positions of the DBL and DRB corners are determined by the parity.
 // URFtoDLF < 20160 in phase 1
 // URFtoDLF < 20160 in phase 2
 // URFtoDLF = 0 for solved cube.
-short URFtoDLF_Move[N_URFtoDLF][N_MOVE] = {0};
+extern short URFtoDLF_Move[N_URFtoDLF][N_MOVE];
 
 // Move table for the permutation of six U-face and D-face edges in phase2. The positions of the DL and DB edges are
 // determined by the parity.
 // URtoDF < 665280 in phase 1
 // URtoDF < 20160 in phase 2
 // URtoDF = 0 for solved cube.
-short URtoDF_Move[N_URtoDF][N_MOVE] = {0};
+extern short URtoDF_Move[N_URtoDF][N_MOVE];
 
 // **************************helper move tables to compute URtoDF for the beginning of phase2************************
 
 // Move table for the three edges UR,UF and UL in phase1.
-short URtoUL_Move[N_URtoUL][N_MOVE] = {0};
+extern short URtoUL_Move[N_URtoUL][N_MOVE];
 
 // Move table for the three edges UB,DR and DF in phase1.
-short UBtoDF_Move[N_UBtoDF][N_MOVE] = {0};
+extern short UBtoDF_Move[N_UBtoDF][N_MOVE];
 
 // Table to merge the coordinates of the UR,UF,UL and UB,DR,DF edges at the beginning of phase2
-short MergeURtoULandUBtoDF[336][336] = {0};
+extern short MergeURtoULandUBtoDF[336][336];
 
 // ****************************************Pruning tables for the search*********************************************
 
 // Pruning table for the permutation of the corners and the UD-slice edges in phase2.
 // The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2] = {0};
+extern char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2];
 
 // Pruning table for the permutation of the edges in phase2.
 // The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2] = {0};
+extern char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2];
 
 // Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1
 // The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1] = {0};
+extern char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1];
 
 // Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1
 // The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2] = {0};
+extern char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2];
 
-int PRUNING_INITED = 0;
+extern int PRUNING_INITED;
 void initPruning();
 
 // Set pruning value in table. Two values are stored in one char.
-void setPruning(char *table, int index, char value) {
-    if ((index & 1) == 0)
-        table[index / 2] &= 0xf0 | value;
-    else
-        table[index / 2] &= 0x0f | (value << 4);
-}
+void setPruning(char *table, int index, char value);
 
 // Extract pruning value
-char getPruning(char *table, int index) {
-    char res;
-
-    if ((index & 1) == 0)
-        res = (table[index / 2] & 0x0f);
-    else
-        res = ((table[index / 2] >> 4) & 0x0f);
-
-    return res;
-}
+char getPruning(char *table, int index);
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube);
 void move(coordcube_t* coordcube, int m);

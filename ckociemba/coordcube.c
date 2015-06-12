@@ -4,6 +4,25 @@
 #include "coordcube.h"
 #include "cubiecube.h"
 
+short twistMove[N_TWIST][N_MOVE];
+short flipMove[N_FLIP][N_MOVE];
+short parityMove[2][18] = {
+    { 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
+    { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 }
+};
+short FRtoBR_Move[N_FRtoBR][N_MOVE];
+short URFtoDLF_Move[N_URFtoDLF][N_MOVE] = {0};
+short URtoDF_Move[N_URtoDF][N_MOVE] = {0};
+short URtoUL_Move[N_URtoUL][N_MOVE] = {0};
+short UBtoDF_Move[N_UBtoDF][N_MOVE] = {0};
+short MergeURtoULandUBtoDF[336][336] = {0};
+char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2] = {0};
+char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2] = {0};
+char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1] = {0};
+char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2] = {0};
+
+int PRUNING_INITED = 0;
+
 void move(coordcube_t* coordcube, int m)
 {
     if (PRUNING_INITED == 0) {
@@ -308,3 +327,23 @@ void initPruning()
 
     PRUNING_INITED = 1;
 }
+
+void setPruning(char *table, int index, char value) {
+    if ((index & 1) == 0)
+        table[index / 2] &= 0xf0 | value;
+    else
+        table[index / 2] &= 0x0f | (value << 4);
+}
+
+// Extract pruning value
+char getPruning(char *table, int index) {
+    char res;
+
+    if ((index & 1) == 0)
+        res = (table[index / 2] & 0x0f);
+    else
+        res = ((table[index / 2] >> 4) & 0x0f);
+
+    return res;
+}
+
