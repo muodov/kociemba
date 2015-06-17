@@ -1,5 +1,8 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
 #include "coordcube.h"
@@ -67,11 +70,17 @@ void read_from_file(void* ptr, int len, const char* name)
 
 void dump_to_file(void* ptr, int len, const char* name)
 {
-    char fname[100] = "prunetables/";
-    strncat(fname, name, 30);
-    FILE* f = fopen(fname, "w");
-    fwrite(ptr, len, 1, f);
-    fclose(f);
+    int status;
+    status = mkdir("prunetables", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (status == 0 || errno == EEXIST) {
+        char fname[100] = "prunetables/";
+        strncat(fname, name, 30);
+        FILE* f = fopen(fname, "w");
+        fwrite(ptr, len, 1, f);
+        fclose(f);
+    } else {
+        fprintf(stderr, "cannot create prunetables/ directory\n");
+    }
 }
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube)
