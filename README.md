@@ -2,7 +2,7 @@
 Here you can find two equivalent implementations (in C and Python) of Herbert Kociemba's two-phase algorithm for solving Rubik's Cube.
 Original Java implementation can be found here: http://kociemba.org/download.htm.
 
-These ports are pretty straightforward (not to say dumb) and most probably can be optimized.
+These ports are pretty straightforward (not to say dumb) and most probably can be optimized. But they have been extensively tested in our [Rubik's cube solving machine](https://blog.zok.pw/hacking/2015/08/18/fac-rubik-solver/), so be confident the algorithm is working.
 
 ## C version
 C sources reside in the ```ckociemba``` folder. Running ```make``` in a root folder will compile a binary called ```solve```. It accepts a cube representation as a commandline argument, and writes the solution to the standard output. You can, of course, use it as a library.
