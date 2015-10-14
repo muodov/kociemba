@@ -11,6 +11,10 @@ int main(int argc, char **argv)
             1000,
             0
         );
+        if (sol == NULL) {
+            puts("Unsolvable cube!");
+            return 2;
+        }
         puts(sol);
         free(sol);
         return 0;
