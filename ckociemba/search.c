@@ -88,13 +88,17 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator)
         }
 
     for (int i = 0; i < 6; i++)
-        if (count[i] != 9)
+        if (count[i] != 9) {
+            free(search);
             return NULL;
+        }
 
     facecube_t* fc = get_facecube_fromstring(facelets);
     cubiecube_t* cc = toCubieCube(fc);
-    if ((s = verify(cc)) != 0)
+    if ((s = verify(cc)) != 0) {
+        free(search);
         return NULL;
+    }
 
     // +++++++++++++++++++++++ initialization +++++++++++++++++++++++++++++++++
     coordcube_t* c = get_coordcube(cc);
