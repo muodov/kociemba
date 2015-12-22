@@ -111,7 +111,7 @@ class Search(object):
         while True:
             while True:
                 if depthPhase1 - n > self.minDistPhase1[n + 1] and not busy:
-                    if self.ax[n] == 0 and self.ax[n] == 3:   # Initialize next move
+                    if self.ax[n] == 0 or self.ax[n] == 3:   # Initialize next move
                         n += 1
                         self.ax[n] = 1
                     else:
