@@ -8,7 +8,13 @@ try:
     import os
     from ckociembawrapper import ffi, lib
     cache_dir = os.path.join(os.path.dirname(__file__), 'cprunetables')
-    _solve = lambda s: ffi.string(lib.solve(s.encode('utf-8'), cache_dir.encode('utf-8'))).strip()
+
+    def _solve(s):
+        res = lib.solve(s.encode('utf-8'), cache_dir.encode('utf-8'))
+        if res != ffi.NULL:
+            return ffi.string(res).strip()
+        else:
+            raise ValueError('Error. Probably cubestring is invalid')
 except ImportError:
     warnings.warn("Native version of the package is not available. "
                   "We have to fallback to pure-Python implementation of "

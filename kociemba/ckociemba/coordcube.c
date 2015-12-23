@@ -66,9 +66,9 @@ int check_cached_table(const char* name, void* ptr, int len, const char *cache_d
     }
     int res = 0;
     if (access(fname, F_OK | R_OK) != -1) {
-        fprintf(stderr, "Found cache for %s. Loading...", name);
+        // fprintf(stderr, "Found cache for %s. Loading...", name);
         read_from_file(ptr, len, fname);
-        fprintf(stderr, "done.\n");
+        // fprintf(stderr, "done.\n");
         res = 0;
     } else {
         fprintf(stderr, "Cache table %s was not found. Recalculating.\n", fname);

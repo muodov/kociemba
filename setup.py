@@ -14,8 +14,16 @@ setup(
     package_data={
         '': ['cprunetables/*', 'pykociemba/**/*'],
     },
+    classifiers=(
+        'Development Status :: 5 - Production/Stable',
+        'Programming Language :: Python',
+    ),
+    entry_points = {
+        'console_scripts': ['kociemba=kociemba.command_line:main'],
+    },
+    setup_requires=['pytest-runner', "cffi>=1.0.0"],
+    tests_require=['pytest', ],
     zip_safe=False,
-    setup_requires=["cffi>=1.0.0"],
     cffi_modules=["kociemba/build_ckociemba.py:ffi"],
     install_requires=["cffi>=1.0.0"],
 )
