@@ -5,6 +5,7 @@
 #include "color.h"
 #include "corner.h"
 #include "edge.h"
+#include "cubiecube.h"
 
 //Cube on the facelet level
 typedef struct {

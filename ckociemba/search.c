@@ -1,6 +1,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include "search.h"
+#include "color.h"
+#include "facecube.h"
 #include "coordcube.h"
 
 #define MIN(a, b) (((a)<(b))?(a):(b))

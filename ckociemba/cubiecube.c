@@ -1,4 +1,5 @@
 #include "cubiecube.h"
+#include "facecube.h"
 
 cubiecube_t * get_moveCube()
 {

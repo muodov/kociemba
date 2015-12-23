@@ -15,11 +15,11 @@ short parityMove[2][18] = {
     { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 }
 };
 short FRtoBR_Move[N_FRtoBR][N_MOVE];
-short URFtoDLF_Move[N_URFtoDLF][N_MOVE] = {0};
-short URtoDF_Move[N_URtoDF][N_MOVE] = {0};
-short URtoUL_Move[N_URtoUL][N_MOVE] = {0};
-short UBtoDF_Move[N_UBtoDF][N_MOVE] = {0};
-short MergeURtoULandUBtoDF[336][336] = {0};
+short URFtoDLF_Move[N_URFtoDLF][N_MOVE] = {{0}};
+short URtoDF_Move[N_URtoDF][N_MOVE] = {{0}};
+short URtoUL_Move[N_URtoUL][N_MOVE] = {{0}};
+short UBtoDF_Move[N_UBtoDF][N_MOVE] = {{0}};
+short MergeURtoULandUBtoDF[336][336] = {{0}};
 char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2] = {0};
 char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2] = {0};
 char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1] = {0};

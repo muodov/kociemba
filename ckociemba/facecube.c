@@ -81,7 +81,7 @@ void to_String(facecube_t* facecube, char* res)
 
 cubiecube_t* toCubieCube(facecube_t* facecube)
 {
-    char ori;
+    unsigned char ori;
     cubiecube_t* ccRet = (cubiecube_t*) calloc(1, sizeof(cubiecube_t));
     for (int i = 0; i < 8; i++)
         ccRet->cp[i] = URF;// invalidate corners
