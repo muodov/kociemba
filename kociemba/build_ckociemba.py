@@ -2,7 +2,7 @@ import cffi
 
 ffi = cffi.FFI()
 ffi.set_source(
-    "kociemba",
+    "ckociemba.ckociembawrapper",
     """
     #include <stdio.h>
     #include <stdlib.h>
@@ -19,8 +19,12 @@ ffi.set_source(
         return sol;
     }
     """,
-    include_dirs=['include'],
-    sources=['coordcube.c', 'cubiecube.c', 'facecube.c', 'search.c'],
+    include_dirs=['ckociemba/include'],
+    sources=[
+        'ckociemba/coordcube.c',
+        'ckociemba/cubiecube.c',
+        'ckociemba/facecube.c',
+        'ckociemba/search.c'],
     extra_compile_args=['-std=c99'])
 
 ffi.cdef("char* solve(char *cubestring);")
