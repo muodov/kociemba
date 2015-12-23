@@ -9,7 +9,8 @@ int main(int argc, char **argv)
             argv[1],
             24,
             1000,
-            0
+            0,
+            "cache"
         );
         if (sol == NULL) {
             puts("Unsolvable cube!");

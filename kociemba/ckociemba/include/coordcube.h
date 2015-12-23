@@ -99,7 +99,7 @@ extern char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1];
 extern char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2];
 
 extern int PRUNING_INITED;
-void initPruning();
+void initPruning(const char *cache_dir);
 
 // Set pruning value in table. Two values are stored in one char.
 void setPruning(char *table, int index, char value);
@@ -108,9 +108,9 @@ void setPruning(char *table, int index, char value);
 char getPruning(char *table, int index);
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube);
-void move(coordcube_t* coordcube, int m);
-int check_cached_table(const char* name, void* ptr, int len);
-void dump_to_file(void* ptr, int len, const char* name);
+void move(coordcube_t* coordcube, int m, const char *cache_dir);
+int check_cached_table(const char* name, void* ptr, int len, const char *cache_dir);
+void dump_to_file(void* ptr, int len, const char* name, const char *cache_dir);
 void read_from_file(void* ptr, int len, const char* name);
 
 #endif

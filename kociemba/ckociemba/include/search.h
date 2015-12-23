@@ -49,7 +49,7 @@ char* solutionToString(search_t* search, int length, int depthPhase1);
  *         Error 7: No solution exists for the given maxDepth<br>
  *         Error 8: Timeout, no solution within given time
  */
-char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator);
+char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, const char* cache_dir);
 
 // Apply phase2 of algorithm and return the combined phase1 and phase2 depth. In phase2, only the moves
 // U,D,R2,F2,L2 and B2 are allowed.

@@ -1,9 +1,13 @@
+kociemba/ckociemba/bin/*
+kociemba/ckociemba/cache/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 
 # C extensions
 *.so
+*.o
 
 # Distribution / packaging
 .Python

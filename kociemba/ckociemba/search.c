@@ -1,6 +1,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include "search.h"
+#include "color.h"
+#include "facecube.h"
 #include "coordcube.h"
 
 #define MIN(a, b) (((a)<(b))?(a):(b))
@@ -53,10 +55,10 @@ char* solutionToString(search_t* search, int length, int depthPhase1)
 }
 
 
-char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator)
+char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, const char* cache_dir)
 {
     if (PRUNING_INITED == 0) {
-        initPruning();
+        initPruning(cache_dir);
     }
 
     search_t* search = (search_t*) calloc(1, sizeof(search_t));
