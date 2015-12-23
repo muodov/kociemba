@@ -1,9 +1,9 @@
 #include "cubiecube.h"
 
-int MOVECUBE_INITED = 0;
-
-void init_moveCube()
+cubiecube_t * get_moveCube()
 {
+    static cubiecube_t moveCube[6];
+    static int moveCube_initialized = 0;
     static const corner_t   cpU[8]  = { UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB };
     static const char       coU[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
     static const edge_t     epU[12] = { UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR };
@@ -29,39 +29,38 @@ void init_moveCube()
     static const edge_t     epB[12] = { UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB };
     static const char       eoB[12] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 };
 
-    memcpy(moveCube[0].cp, cpU, sizeof(cpU));
-    memcpy(moveCube[0].co, coU, sizeof(coU));
-    memcpy(moveCube[0].ep, epU, sizeof(epU));
-    memcpy(moveCube[0].eo, eoU, sizeof(eoU));
-    memcpy(moveCube[1].cp, cpR, sizeof(cpR));
-    memcpy(moveCube[1].co, coR, sizeof(coR));
-    memcpy(moveCube[1].ep, epR, sizeof(epR));
-    memcpy(moveCube[1].eo, eoR, sizeof(eoR));
-    memcpy(moveCube[2].cp, cpF, sizeof(cpF));
-    memcpy(moveCube[2].co, coF, sizeof(coF));
-    memcpy(moveCube[2].ep, epF, sizeof(epF));
-    memcpy(moveCube[2].eo, eoF, sizeof(eoF));
-    memcpy(moveCube[3].cp, cpD, sizeof(cpD));
-    memcpy(moveCube[3].co, coD, sizeof(coD));
-    memcpy(moveCube[3].ep, epD, sizeof(epD));
-    memcpy(moveCube[3].eo, eoD, sizeof(eoD));
-    memcpy(moveCube[4].cp, cpL, sizeof(cpL));
-    memcpy(moveCube[4].co, coL, sizeof(coL));
-    memcpy(moveCube[4].ep, epL, sizeof(epL));
-    memcpy(moveCube[4].eo, eoL, sizeof(eoL));
-    memcpy(moveCube[5].cp, cpB, sizeof(cpB));
-    memcpy(moveCube[5].co, coB, sizeof(coB));
-    memcpy(moveCube[5].ep, epB, sizeof(epB));
-    memcpy(moveCube[5].eo, eoB, sizeof(eoB));
+    if (!moveCube_initialized) {
+        memcpy(moveCube[0].cp, cpU, sizeof(cpU));
+        memcpy(moveCube[0].co, coU, sizeof(coU));
+        memcpy(moveCube[0].ep, epU, sizeof(epU));
+        memcpy(moveCube[0].eo, eoU, sizeof(eoU));
+        memcpy(moveCube[1].cp, cpR, sizeof(cpR));
+        memcpy(moveCube[1].co, coR, sizeof(coR));
+        memcpy(moveCube[1].ep, epR, sizeof(epR));
+        memcpy(moveCube[1].eo, eoR, sizeof(eoR));
+        memcpy(moveCube[2].cp, cpF, sizeof(cpF));
+        memcpy(moveCube[2].co, coF, sizeof(coF));
+        memcpy(moveCube[2].ep, epF, sizeof(epF));
+        memcpy(moveCube[2].eo, eoF, sizeof(eoF));
+        memcpy(moveCube[3].cp, cpD, sizeof(cpD));
+        memcpy(moveCube[3].co, coD, sizeof(coD));
+        memcpy(moveCube[3].ep, epD, sizeof(epD));
+        memcpy(moveCube[3].eo, eoD, sizeof(eoD));
+        memcpy(moveCube[4].cp, cpL, sizeof(cpL));
+        memcpy(moveCube[4].co, coL, sizeof(coL));
+        memcpy(moveCube[4].ep, epL, sizeof(epL));
+        memcpy(moveCube[4].eo, eoL, sizeof(eoL));
+        memcpy(moveCube[5].cp, cpB, sizeof(cpB));
+        memcpy(moveCube[5].co, coB, sizeof(coB));
+        memcpy(moveCube[5].ep, epB, sizeof(epB));
+        memcpy(moveCube[5].eo, eoB, sizeof(eoB));
+    }
 
-    MOVECUBE_INITED = 1;
+    return moveCube;
 }
 
 cubiecube_t* get_cubiecube()
 {
-    if (MOVECUBE_INITED == 0)
-        init_moveCube();
-
     cubiecube_t* result = (cubiecube_t *) calloc(1, sizeof(cubiecube_t));
 
     static const corner_t   cp[8]   = { URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB };

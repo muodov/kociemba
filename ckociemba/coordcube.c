@@ -102,6 +102,7 @@ coordcube_t* get_coordcube(cubiecube_t* cubiecube)
 void initPruning()
 {
     cubiecube_t* a;
+    cubiecube_t* moveCube = get_moveCube();
 
     if(check_cached_table("twistMove", (void*) twistMove, sizeof(twistMove)) != 0) {
         a = get_cubiecube();
