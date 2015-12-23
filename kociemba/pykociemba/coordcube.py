@@ -1,12 +1,17 @@
 import logging
 import os.path
-import cPickle
+
+try:
+    import cPickle
+except ImportError:
+    import pickle as cPickle
 
 from .cubiecube import CubieCube, moveCube, getURtoDF
 
 log = logging.getLogger(__name__)
 
 cache_dir = os.path.join(os.path.dirname(__file__), 'prunetables')
+
 
 def setPruning(table, index, value):
     """Set pruning value in table. Two values are stored in one byte."""
@@ -15,6 +20,7 @@ def setPruning(table, index, value):
     else:
         table[index / 2] &= 0x0f | (value << 4)
     # table[index] = value & 0xf
+
 
 def getPruning(table, index):
     """Extract pruning value"""
@@ -26,6 +32,7 @@ def getPruning(table, index):
     return res
     # return table[index] & 0xf
 
+
 def load_cachetable(name):
     obj = None
     try:
@@ -34,6 +41,7 @@ def load_cachetable(name):
     except IOError as e:
         log.warning('could not read cache for %s: %s. Recalculating it...', name, e)
     return obj
+
 
 def dump_cachetable(obj, name):
     with open(os.path.join(cache_dir, name + '.pkl'), 'w') as f:
@@ -147,8 +155,8 @@ class CoordCube(object):
     # Parity of the corner permutation. This is the same as the parity for the edge permutation of a valid cube.
     # parity has values 0 and 1
     parityMove = [
-        [ 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 ],
-        [ 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 ],
+        [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+        [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
     ]
 
     # ***********************************Phase 1 and 2 movetable********************************************************

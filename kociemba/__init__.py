@@ -23,8 +23,8 @@ except ImportError:
                   "project page for a native implementation: "
                   "https://github.com/muodov/kociemba",
                   SlowContextWarning)
-    import pykociemba.search
-    _solve = lambda s: pykociemba.search.Search().solution(s, 24, 1000, False).strip()
+    from .pykociemba import search
+    _solve = lambda s: search.Search().solution(s, 24, 1000, False).strip()
 
 
 def solve(cubestring):
