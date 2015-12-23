@@ -12,7 +12,12 @@ setup(
     license='GPLv2',
     packages=['kociemba'],
     package_data={
-        '': ['cprunetables/*', 'pykociemba/**/*'],
+        '': [
+            'cprunetables/*',
+            'pykociemba/*.py',
+            'pykociemba/prunetables/*',
+            'ckociemba/include/*',
+            'ckociemba/*'],
     },
     classifiers=(
         'Development Status :: 5 - Production/Stable',
