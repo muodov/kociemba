@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='kociemba',
-    version='1.0',
+    version='1.0.1',
     description='Python/C implementation of Herbert Kociemba\'s Two-Phase algorithm for solving Rubik\'s Cube',
     keywords='kociemba rubik cube solver twophase',
     url='https://github.com/muodov/kociemba',
@@ -16,8 +16,8 @@ setup(
             'cprunetables/*',
             'pykociemba/*.py',
             'pykociemba/prunetables/*',
-            'ckociemba/include/*',
-            'ckociemba/*'],
+            'ckociemba/include/*.h',
+            'ckociemba/*.c'],
     },
     classifiers=(
         'Development Status :: 5 - Production/Stable',
