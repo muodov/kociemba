@@ -27,10 +27,10 @@ char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2] = {0};
 
 int PRUNING_INITED = 0;
 
-void move(coordcube_t* coordcube, int m)
+void move(coordcube_t* coordcube, int m, const char *cache_dir)
 {
     if (PRUNING_INITED == 0) {
-        initPruning();
+        initPruning(cache_dir);
     }
     coordcube->twist = twistMove[coordcube->twist][m];
     coordcube->flip = flipMove[coordcube->flip][m];
@@ -44,42 +44,63 @@ void move(coordcube_t* coordcube, int m)
         coordcube->URtoDF = MergeURtoULandUBtoDF[coordcube->URtoUL][coordcube->UBtoDF];
 }
 
-int check_cached_table(const char* name, void* ptr, int len)
+char * join_path(const char *dir, const char *filename)
 {
-    char fname[100] = "prunetables/";
-    strncat(fname, name, 30);
-    if (access(fname, F_OK | R_OK) != -1) {
-        fprintf(stderr, "Found cache for %s. Loading...", name);
-        read_from_file(ptr, len, name);
-        fprintf(stderr, "done.\n");
-        return 0;
-    } else {
-        fprintf(stderr, "Cache for %s was not found. Recalculating.\n", name);
+    int path_len = strnlen(dir, 200);
+    if (path_len == 200) {
+        return NULL;
+    }
+    char *fpath = calloc(path_len + 32, 1);
+    strcpy(fpath, dir);
+    strcat(fpath, "/");
+    strncat(fpath, filename, 30);
+    return fpath;
+}
+
+int check_cached_table(const char* name, void* ptr, int len, const char *cache_dir)
+{
+    char *fname = join_path(cache_dir, name);
+    if (fname == NULL) {
+        fprintf(stderr, "Path to cache tables is too long\n");
         return -1;
     }
+    int res = 0;
+    if (access(fname, F_OK | R_OK) != -1) {
+        fprintf(stderr, "Found cache for %s. Loading...", name);
+        read_from_file(ptr, len, fname);
+        fprintf(stderr, "done.\n");
+        res = 0;
+    } else {
+        fprintf(stderr, "Cache table %s was not found. Recalculating.\n", fname);
+        res = 1;
+    }
+    free(fname);
+    return res;
 }
 
 void read_from_file(void* ptr, int len, const char* name)
 {
-    char fname[100] = "prunetables/";
-    strncat(fname, name, 30);
-    FILE* f = fopen(fname, "r");
+    FILE* f = fopen(name, "r");
     fread(ptr, len, 1, f);
     fclose(f);
 }
 
-void dump_to_file(void* ptr, int len, const char* name)
+void dump_to_file(void* ptr, int len, const char* name, const char *cache_dir)
 {
     int status;
-    status = mkdir("prunetables", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    status = mkdir(cache_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (status == 0 || errno == EEXIST) {
-        char fname[100] = "prunetables/";
-        strncat(fname, name, 30);
-        FILE* f = fopen(fname, "w");
-        fwrite(ptr, len, 1, f);
-        fclose(f);
+        char *fname = join_path(cache_dir, name);
+        if (fname == NULL) {
+            fprintf(stderr, "Path to cache tables is too long\n");
+        } else {
+            FILE* f = fopen(fname, "w");
+            fwrite(ptr, len, 1, f);
+            free(fname);
+            fclose(f);
+        }
     } else {
-        fprintf(stderr, "cannot create prunetables/ directory\n");
+        fprintf(stderr, "cannot create cache tables directory\n");
     }
 }
 
@@ -99,12 +120,12 @@ coordcube_t* get_coordcube(cubiecube_t* cubiecube)
     return result;
 }
 
-void initPruning()
+void initPruning(const char *cache_dir)
 {
     cubiecube_t* a;
     cubiecube_t* moveCube = get_moveCube();
 
-    if(check_cached_table("twistMove", (void*) twistMove, sizeof(twistMove)) != 0) {
+    if(check_cached_table("twistMove", (void*) twistMove, sizeof(twistMove), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_TWIST; i++) {
             setTwist(a, i);
@@ -117,10 +138,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) twistMove, sizeof(twistMove), "twistMove");
+        dump_to_file((void*) twistMove, sizeof(twistMove), "twistMove", cache_dir);
     }
 
-    if(check_cached_table("flipMove", (void*) flipMove, sizeof(flipMove)) != 0) {
+    if(check_cached_table("flipMove", (void*) flipMove, sizeof(flipMove), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_FLIP; i++) {
             setFlip(a, i);
@@ -133,10 +154,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) flipMove, sizeof(flipMove), "flipMove");
+        dump_to_file((void*) flipMove, sizeof(flipMove), "flipMove", cache_dir);
     }
 
-    if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, sizeof(FRtoBR_Move)) != 0) {
+    if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, sizeof(FRtoBR_Move), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_FRtoBR; i++) {
             setFRtoBR(a, i);
@@ -149,10 +170,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) FRtoBR_Move, sizeof(FRtoBR_Move), "FRtoBR_Move");
+        dump_to_file((void*) FRtoBR_Move, sizeof(FRtoBR_Move), "FRtoBR_Move", cache_dir);
     }
 
-    if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, sizeof(URFtoDLF_Move)) != 0) {
+    if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, sizeof(URFtoDLF_Move), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URFtoDLF; i++) {
             setURFtoDLF(a, i);
@@ -165,10 +186,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) URFtoDLF_Move, sizeof(URFtoDLF_Move), "URFtoDLF_Move");
+        dump_to_file((void*) URFtoDLF_Move, sizeof(URFtoDLF_Move), "URFtoDLF_Move", cache_dir);
     }
 
-    if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, sizeof(URtoDF_Move)) != 0) {
+    if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, sizeof(URtoDF_Move), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URtoDF; i++) {
             setURtoDF(a, i);
@@ -183,10 +204,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) URtoDF_Move, sizeof(URtoDF_Move), "URtoDF_Move");
+        dump_to_file((void*) URtoDF_Move, sizeof(URtoDF_Move), "URtoDF_Move", cache_dir);
     }
 
-    if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, sizeof(URtoUL_Move)) != 0) {
+    if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, sizeof(URtoUL_Move), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_URtoUL; i++) {
             setURtoUL(a, i);
@@ -199,10 +220,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) URtoUL_Move, sizeof(URtoUL_Move), "URtoUL_Move");
+        dump_to_file((void*) URtoUL_Move, sizeof(URtoUL_Move), "URtoUL_Move", cache_dir);
     }
 
-    if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, sizeof(UBtoDF_Move)) != 0) {
+    if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, sizeof(UBtoDF_Move), cache_dir) != 0) {
         a = get_cubiecube();
         for (short i = 0; i < N_UBtoDF; i++) {
             setUBtoDF(a, i);
@@ -215,10 +236,10 @@ void initPruning()
             }
         }
         free(a);
-        dump_to_file((void*) UBtoDF_Move, sizeof(UBtoDF_Move), "UBtoDF_Move");
+        dump_to_file((void*) UBtoDF_Move, sizeof(UBtoDF_Move), "UBtoDF_Move", cache_dir);
     }
 
-    if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF)) != 0) {
+    if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), cache_dir) != 0) {
         // for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
         // UD-slice and the index is <20160
         for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
@@ -226,12 +247,12 @@ void initPruning()
                 MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = (short) getURtoDF_standalone(uRtoUL, uBtoDF);
             }
         }
-        dump_to_file((void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), "MergeURtoULandUBtoDF");
+        dump_to_file((void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), "MergeURtoULandUBtoDF", cache_dir);
     }
 
     int depth, done;
 
-    if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun)) != 0) {
+    if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), cache_dir) != 0) {
         for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
             Slice_URFtoDLF_Parity_Prun[i] = -1;
         depth = 0;
@@ -272,10 +293,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_to_file((void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), "Slice_URFtoDLF_Parity_Prun");
+        dump_to_file((void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), "Slice_URFtoDLF_Parity_Prun", cache_dir);
     }
 
-    if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun)) != 0) {
+    if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), cache_dir) != 0) {
         for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
             Slice_URtoDF_Parity_Prun[i] = -1;
         depth = 0;
@@ -316,10 +337,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_to_file((void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), "Slice_URtoDF_Parity_Prun");
+        dump_to_file((void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), "Slice_URtoDF_Parity_Prun", cache_dir);
     }
     
-    if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun)) != 0) {
+    if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun), cache_dir) != 0) {
         for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
             Slice_Twist_Prun[i] = -1;
         depth = 0;
@@ -341,10 +362,10 @@ void initPruning()
             }
             depth++;
         }
-        dump_to_file((void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun), "Slice_Twist_Prun");
+        dump_to_file((void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun), "Slice_Twist_Prun", cache_dir);
     }
 
-    if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun)) != 0) {
+    if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun), cache_dir) != 0) {
         for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
             Slice_Flip_Prun[i] = -1;
         depth = 0;
@@ -366,7 +387,7 @@ void initPruning()
             }
             depth++;
         }
-        dump_to_file((void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun), "Slice_Flip_Prun");
+        dump_to_file((void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun), "Slice_Flip_Prun", cache_dir);
     }
 
     PRUNING_INITED = 1;
