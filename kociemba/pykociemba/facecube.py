@@ -1,3 +1,5 @@
+from builtins import range
+
 from .facelet import (
     U1, U2, U3, U4, U5, U6, U7, U8, U9, R1, R2, R3, R4, R5, R6, R7, R8, R9,
     F1, F2, F3, F4, F5, F6, F7, F8, F9, D1, D2, D3, D4, D5, D6, D7, D8, D9,
@@ -58,14 +60,14 @@ class FaceCube(object):
         from .cubiecube import CubieCube
         
         ccRet = CubieCube()
-        for i in xrange(8):
+        for i in range(8):
             ccRet.cp[i] = URF   # invalidate corners
-        for i in xrange(12):
+        for i in range(12):
             ccRet.ep[i] = UR    # and edges
 
         for i in corner_values:
             # get the colors of the cubie at corner i, starting with U/D
-            for ori in xrange(3):
+            for ori in range(3):
                 if (self.f[self.cornerFacelet[i][ori]] == U
                         or self.f[self.cornerFacelet[i][ori]] == D):
                     break

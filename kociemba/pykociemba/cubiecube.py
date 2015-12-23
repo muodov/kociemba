@@ -1,8 +1,8 @@
 import copy
+from builtins import range
 
 from .corner import URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB, corner_values
 from .edge import UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR, edge_values
-from .facelet import facelet_values
 from .facecube import FaceCube
 
 
@@ -11,14 +11,14 @@ from .facecube import FaceCube
 def Cnk(n, k):
     if n < k:
         return 0
-    if k > n / 2:
+    if k > n // 2:
         k = n - k
     s = 1
     i = n
     j = 1
     while i != n - k:
         s *= i
-        s /= j
+        s //= j
         i -= 1
         j += 1
     return s
@@ -27,7 +27,7 @@ def Cnk(n, k):
 def rotateLeft(arr, l, r):
     """Left rotation of all array elements between l and r"""
     temp = arr[l]
-    for i in xrange(l, r):
+    for i in range(l, r):
         arr[i] = arr[i + 1]
     arr[r] = temp
 
@@ -35,7 +35,7 @@ def rotateLeft(arr, l, r):
 def rotateRight(arr, l, r):
     """Right rotation of all array elements between l and r"""
     temp = arr[r]
-    for i in xrange(r, l, -1):
+    for i in range(r, l, -1):
         arr[i] = arr[i - 1]
     arr[l] = temp
 
@@ -46,7 +46,7 @@ def getURtoDF(idx1, idx2):
     b = CubieCube()
     a.setURtoUL(idx1)
     b.setUBtoDF(idx2)
-    for i in xrange(8):
+    for i in range(8):
         if a.ep[i] != BR:
             if b.ep[i] != BR:   # collision
                 return -1
@@ -80,12 +80,12 @@ class CubieCube(object):
         for i in corner_values:
             j = self.cp[i]  # cornercubie with index j is at cornerposition with index i
             ori = self.co[i]   # Orientation of this cubie
-            for n in xrange(3):
+            for n in range(3):
                 _butya = FaceCube.cornerFacelet[i][(n + ori) % 3]
                 fcRet.f[_butya] = FaceCube.cornerColor[j][n]
         for i in edge_values:
             ori = self.eo[i]   # Orientation of this cubie
-            for n in xrange(2):
+            for n in range(2):
                 _butya = FaceCube.edgeFacelet[i][(n + ori) % 2]
                 fcRet.f[_butya] = FaceCube.edgeColor[self.ep[i]][n]
         return fcRet
@@ -201,39 +201,39 @@ class CubieCube(object):
         """return the twist of the 8 corners. 0 <= twist < 3^7"""
 
         ret = 0
-        for i in xrange(URF, DRB):
+        for i in range(URF, DRB):
             ret = (3 * ret + self.co[i]) & 0xffff
         return ret
 
     def setTwist(self, twist):
         twistParity = 0
-        for i in xrange(DRB - 1, URF - 1, -1):
+        for i in range(DRB - 1, URF - 1, -1):
             self.co[i] = (twist % 3) & 0xff
             twistParity += self.co[i]
-            twist /= 3
+            twist //= 3
         self.co[DRB] = ((3 - twistParity % 3) % 3) & 0xff
 
     def getFlip(self):
         """return the flip of the 12 edges. 0<= flip < 2^11"""
 
         ret = 0
-        for i in xrange(UR, BR):
+        for i in range(UR, BR):
             ret = (2 * ret + self.eo[i]) & 0xffff
         return ret
 
     def setFlip(self, flip):
         flipParity = 0
-        for i in xrange(BR - 1, UR - 1, -1):
+        for i in range(BR - 1, UR - 1, -1):
             self.eo[i] = (flip % 2) & 0xff
             flipParity += self.eo[i]
-            flip /= 2
+            flip //= 2
         self.eo[BR] = ((2 - flipParity % 2) % 2) & 0xff
 
     def cornerParity(self):
         """Parity of the corner permutation"""
         s = 0
-        for i in xrange(DRB, URF, -1):
-            for j in xrange(i - 1, URF - 1, -1):
+        for i in range(DRB, URF, -1):
+            for j in range(i - 1, URF - 1, -1):
                 if self.cp[j] > self.cp[i]:
                     s += 1
         return (s % 2) & 0xffff
@@ -241,8 +241,8 @@ class CubieCube(object):
     def edgeParity(self):
         """Parity of the edges permutation. Parity of corners and edges are the same if the cube is solvable."""
         s = 0
-        for i in xrange(BR, UR, -1):
-            for j in xrange(i - 1, UR - 1, -1):
+        for i in range(BR, UR, -1):
+            for j in range(i - 1, UR - 1, -1):
                 if self.ep[j] > self.ep[i]:
                     s += 1
         return (s % 2) & 0xffff
@@ -253,14 +253,14 @@ class CubieCube(object):
         x = 0
         edge4 = [None] * 4  # new Edge[4]
         # compute the index a < (12 choose 4) and the permutation array perm.
-        for j in xrange(BR, UR - 1, -1):
+        for j in range(BR, UR - 1, -1):
             if (FR <= self.ep[j] and self.ep[j] <= BR):
                 a += Cnk(11 - j, x + 1)
                 edge4[3 - x] = self.ep[j]
                 x += 1
 
         b = 0
-        for j in xrange(3, 0, -1):  # compute the index b < 4! for the permutation in perm
+        for j in range(3, 0, -1):  # compute the index b < 4! for the permutation in perm
             k = 0
             while (edge4[j] != j + 8):
                 rotateLeft(edge4, 0, j)
@@ -272,26 +272,26 @@ class CubieCube(object):
         sliceEdge = [ FR, FL, BL, BR ]
         otherEdge = [ UR, UF, UL, UB, DR, DF, DL, DB ]
         b = idx % 24   # Permutation
-        a = idx / 24   # Combination
+        a = idx // 24   # Combination
         for i in edge_values:
             self.ep[i] = DB     # Use UR to invalidate all edges
 
-        for j in xrange(1, 4):  # generate permutation from index b
+        for j in range(1, 4):  # generate permutation from index b
             k = b % (j + 1)
-            b /= j + 1
+            b //= j + 1
 
             while k > 0:    # while (k-- > 0) #????????????????
                 k -= 1
                 rotateRight(sliceEdge, 0, j)
 
         x = 3   # generate combination and set slice edges
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if a - Cnk(11 - j, x + 1) >= 0:
                 self.ep[j] = sliceEdge[3 - x]
                 a -= Cnk(11 - j, x + 1)
                 x -= 1
         x = 0   # set the remaining edges UR..DB
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if self.ep[j] == DB:
                 self.ep[j] = otherEdge[x]
                 x += 1
@@ -302,14 +302,14 @@ class CubieCube(object):
         x = 0
         corner6 = []    # new Corner[6]
         # compute the index a < (8 choose 6) and the corner permutation.
-        for j in xrange(URF, DRB + 1):
+        for j in range(URF, DRB + 1):
             if self.cp[j] <= DLF:
                 a += Cnk(j, x + 1)
                 corner6.append(self.cp[j])
                 x += 1
 
         b = 0
-        for j in xrange(5, 0, -1):   # compute the index b < 6! for the
+        for j in range(5, 0, -1):   # compute the index b < 6! for the
             # permutation in corner6
             k = 0
             while corner6[j] != j:
@@ -322,25 +322,25 @@ class CubieCube(object):
         corner6 = [ URF, UFL, ULB, UBR, DFR, DLF ]
         otherCorner = [ DBL, DRB ]
         b = idx % 720  # Permutation
-        a = idx / 720  # Combination
+        a = idx // 720  # Combination
         for i in corner_values:
             self.cp[i] = DRB    # Use DRB to invalidate all corners
 
-        for j in xrange(1, 6):   # generate permutation from index b
+        for j in range(1, 6):   # generate permutation from index b
             k = b % (j + 1)
-            b /= j + 1
+            b //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(corner6, 0, j)
         x = 5
         # generate combination and set corners
-        for j in xrange(DRB, -1, -1):
+        for j in range(DRB, -1, -1):
             if a - Cnk(j, x + 1) >= 0:
                 self.cp[j] = corner6[x]
                 a -= Cnk(j, x + 1)
                 x -= 1
         x = 0
-        for j in xrange(URF, DRB + 1):
+        for j in range(URF, DRB + 1):
             if self.cp[j] == DRB:
                 self.cp[j] = otherCorner[x]
                 x += 1
@@ -351,14 +351,14 @@ class CubieCube(object):
         x = 0
         edge6 = []  # new Edge[6]
         # compute the index a < (12 choose 6) and the edge permutation.
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if self.ep[j] <= DF:
                 a += Cnk(j, x + 1)
                 edge6.append(self.ep[j])
                 x += 1
 
         b = 0
-        for j in xrange(5, 0, -1):  # compute the index b < 6! for the permutation in edge6
+        for j in range(5, 0, -1):  # compute the index b < 6! for the permutation in edge6
             k = 0
             while edge6[j] != j:
                 rotateLeft(edge6, 0, j)
@@ -370,26 +370,26 @@ class CubieCube(object):
         edge6 = [ UR, UF, UL, UB, DR, DF ]
         otherEdge = [ DL, DB, FR, FL, BL, BR ]
         b = idx % 720  # Permutation
-        a = idx / 720  # Combination
+        a = idx // 720  # Combination
         for i in edge_values:
             self.ep[i] = BR     # Use BR to invalidate all edges
 
-        for j in xrange(1, 6):   # generate permutation from index b
+        for j in range(1, 6):   # generate permutation from index b
             k = b % (j + 1)
-            b /= j + 1
+            b //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(edge6, 0, j)
         x = 5
         # generate combination and set edges
-        for j in xrange(BR, -1, -1):
+        for j in range(BR, -1, -1):
             if a - Cnk(j, x + 1) >= 0:
                 self.ep[j] = edge6[x]
                 a -= Cnk(j, x + 1)
                 x -= 1
         x = 0
         # set the remaining edges DL..BR
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if self.ep[j] == BR:
                 self.ep[j] = otherEdge[x]
                 x += 1
@@ -400,14 +400,14 @@ class CubieCube(object):
         x = 0
         edge3 = []  # new Edge[3]
         # compute the index a < (12 choose 3) and the edge permutation.
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if self.ep[j] <= UL:
                 a += Cnk(j, x + 1)
                 edge3.append(self.ep[j])
                 x += 1
 
         b = 0
-        for j in xrange(2, 0, -1):  # compute the index b < 3! for the permutation in edge3
+        for j in range(2, 0, -1):  # compute the index b < 3! for the permutation in edge3
             k = 0
             while edge3[j] != j:
                 rotateLeft(edge3, 0, j)
@@ -418,18 +418,18 @@ class CubieCube(object):
     def setURtoUL(self, idx):
         edge3 = [ UR, UF, UL ]
         b = idx % 6    # Permutation
-        a = idx / 6    # Combination
+        a = idx // 6    # Combination
         for i in edge_values:
             self.ep[i] = BR    # Use BR to invalidate all edges
 
-        for j in xrange(1, 3):   # generate permutation from index b
+        for j in range(1, 3):   # generate permutation from index b
             k = b % (j + 1)
-            b /= j + 1
+            b //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(edge3, 0, j)
         x = 2  # generate combination and set edges
-        for j in xrange(BR, -1, -1):
+        for j in range(BR, -1, -1):
             if a - Cnk(j, x + 1) >= 0:
                 self.ep[j] = edge3[x]
                 a -= Cnk(j, x + 1)
@@ -441,14 +441,14 @@ class CubieCube(object):
         x = 0
         edge3 = []  # new Edge[3]
         # compute the index a < (12 choose 3) and the edge permutation.
-        for j in xrange(UR, BR + 1):
+        for j in range(UR, BR + 1):
             if UB <= self.ep[j] and self.ep[j] <= DF:
                 a += Cnk(j, x + 1)
                 edge3.append(self.ep[j])
                 x += 1
 
         b = 0
-        for j in xrange(2, 0, -1):  # compute the index b < 3! for the permutation in edge3
+        for j in range(2, 0, -1):  # compute the index b < 3! for the permutation in edge3
             k = 0
             while edge3[j] != UB + j:
                 rotateLeft(edge3, 0, j)
@@ -459,20 +459,20 @@ class CubieCube(object):
     def setUBtoDF(self, idx):
         edge3 = [ UB, DR, DF ]
         b = idx % 6    # Permutation
-        a = idx / 6    # Combination
+        a = idx // 6    # Combination
         for i in edge_values:
             self.ep[i] = BR     # Use BR to invalidate all edges
 
-        for j in xrange(1, 3):
+        for j in range(1, 3):
             # generate permutation from index b
             k = b % (j + 1)
-            b /= j + 1
+            b //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(edge3, 0, j)
         x = 2
         # generate combination and set edges
-        for j in xrange(BR, -1, -1):
+        for j in range(BR, -1, -1):
             if a - Cnk(j, x + 1) >= 0:
                 self.ep[j] = edge3[x]
                 a -= Cnk(j, x + 1)
@@ -481,7 +481,7 @@ class CubieCube(object):
     def getURFtoDLB(self):
         perm = copy.copy(self.cp)
         b = 0
-        for j in xrange(7, 0, -1):  # compute the index b < 8! for the permutation in perm
+        for j in range(7, 0, -1):  # compute the index b < 8! for the permutation in perm
             k = 0
             while perm[j] != j:
                 rotateLeft(perm, 0, j)
@@ -491,22 +491,22 @@ class CubieCube(object):
 
     def setURFtoDLB(self, idx):
         perm = [ URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB ]
-        for j in xrange(1, 8):
+        for j in range(1, 8):
             k = idx % (j + 1)
-            idx /= j + 1
+            idx //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(perm, 0, j)
         x = 7
         # set corners
-        for j in xrange(7, -1, -1):
+        for j in range(7, -1, -1):
             self.cp[j] = perm[x]
             x -= 1
 
     def getURtoBR(self):
         perm = copy.copy(self.ep)
         b = 0
-        for j in xrange(11, 0, -1):     # compute the index b < 12! for the permutation in perm
+        for j in range(11, 0, -1):     # compute the index b < 12! for the permutation in perm
             k = 0
             while perm[j] != j:
                 rotateLeft(perm, 0, j)
@@ -516,14 +516,14 @@ class CubieCube(object):
 
     def setURtoBR(self, idx):
         perm = [ UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR ]
-        for j in xrange(1, 12):
+        for j in range(1, 12):
             k = idx % (j + 1)
-            idx /= j + 1
+            idx //= j + 1
             while k > 0:
                 k -= 1
                 rotateRight(perm, 0, j)
         x = 11  # set edges
-        for j in xrange(11, -1, -1):
+        for j in range(11, -1, -1):
             self.ep[j] = perm[x]
             x -= 1
 
@@ -542,11 +542,11 @@ class CubieCube(object):
         edgeCount = [0] * 12  # new int[12]
         for i in edge_values:
             edgeCount[self.ep[i]] += 1
-        for i in xrange(12):
+        for i in range(12):
             if edgeCount[i] != 1:
                 return -2
 
-        for i in xrange(12):
+        for i in range(12):
             sum += self.eo[i]
         if sum % 2 != 0:
             return -3
@@ -554,12 +554,12 @@ class CubieCube(object):
         cornerCount = [0] * 8   # new int[8]
         for i in corner_values:
             cornerCount[self.cp[i]] += 1
-        for i in xrange(8):
+        for i in range(8):
             if cornerCount[i] != 1:
                 return -4   # missing corners
 
         sum = 0
-        for i in xrange(8):
+        for i in range(8):
             sum += self.co[i]
         if sum % 3 != 0:
             return -5   # twisted corner

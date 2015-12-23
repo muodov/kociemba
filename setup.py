@@ -30,5 +30,5 @@ setup(
     tests_require=['pytest', ],
     zip_safe=False,
     cffi_modules=["kociemba/build_ckociemba.py:ffi"],
-    install_requires=["cffi>=1.0.0"],
+    install_requires=["cffi>=1.0.0", 'future'],
 )

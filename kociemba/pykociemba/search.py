@@ -1,4 +1,5 @@
 import time
+from builtins import range
 from .color import colors
 from .facecube import FaceCube
 from .coordcube import CoordCube, getPruning
@@ -29,7 +30,7 @@ class Search(object):
         """generate the solution string from the array data"""
 
         s = ""
-        for i in xrange(length):
+        for i in range(length):
             s += self.ax_to_s[self.ax[i]]
             s += self.po_to_s[self.po[i]]
             if depthPhase1 is not None and i == depthPhase1 - 1:
@@ -69,13 +70,13 @@ class Search(object):
         # +++++++++++++++++++++check for wrong input +++++++++++++++++++++++++++++
         count = [0] * 6
         try:
-            for i in xrange(54):
+            for i in range(54):
                 assert facelets[i] in colors
                 count[colors[facelets[i]]] += 1
-        except Exception as e:
+        except Exception:
             return "Error 1"
 
-        for i in xrange(6):
+        for i in range(6):
             if count[i] != 9:
                 return "Error 1"
 
@@ -93,7 +94,7 @@ class Search(object):
         self.flip[0] = c.flip
         self.twist[0] = c.twist
         self.parity[0] = c.parity
-        self.slice[0] = c.FRtoBR / 24
+        self.slice[0] = c.FRtoBR // 24
         self.URFtoDLF[0] = c.URFtoDLF
         self.FRtoBR[0] = c.FRtoBR
         self.URtoUL[0] = c.URtoUL
@@ -159,7 +160,7 @@ class Search(object):
             mv = 3 * self.ax[n] + self.po[n] - 1
             self.flip[n + 1] = CoordCube.flipMove[self.flip[n]][mv]
             self.twist[n + 1] = CoordCube.twistMove[self.twist[n]][mv]
-            self.slice[n + 1] = CoordCube.FRtoBR_Move[self.slice[n] * 24][mv] / 24
+            self.slice[n + 1] = CoordCube.FRtoBR_Move[self.slice[n] * 24][mv] // 24
             self.minDistPhase1[n + 1] = max(
                 getPruning(
                     CoordCube.Slice_Flip_Prun,
@@ -193,7 +194,7 @@ class Search(object):
         d1 = 0
         d2 = 0
         maxDepthPhase2 = min(10, maxDepth - depthPhase1)    # Allow only max 10 moves in phase2
-        for i in xrange(depthPhase1):
+        for i in range(depthPhase1):
             mv = 3 * self.ax[i] + self.po[i] - 1
             self.URFtoDLF[i + 1] = CoordCube.URFtoDLF_Move[self.URFtoDLF[i]][mv]
             self.FRtoBR[i + 1] = CoordCube.FRtoBR_Move[self.FRtoBR[i]][mv]
@@ -206,7 +207,7 @@ class Search(object):
         if d1 > maxDepthPhase2:
             return -1
 
-        for i in xrange(depthPhase1):
+        for i in range(depthPhase1):
             mv = 3 * self.ax[i] + self.po[i] - 1
             self.URtoUL[i + 1] = CoordCube.URtoUL_Move[self.URtoUL[i]][mv]
             self.UBtoDF[i + 1] = CoordCube.UBtoDF_Move[self.UBtoDF[i]][mv]

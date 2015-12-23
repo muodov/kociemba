@@ -1,3 +1,4 @@
+from builtins import range
 import logging
 import os.path
 
@@ -16,9 +17,9 @@ cache_dir = os.path.join(os.path.dirname(__file__), 'prunetables')
 def setPruning(table, index, value):
     """Set pruning value in table. Two values are stored in one byte."""
     if ((index & 1) == 0):
-        table[index / 2] &= 0xf0 | value
+        table[index // 2] &= 0xf0 | value
     else:
-        table[index / 2] &= 0x0f | (value << 4)
+        table[index // 2] &= 0x0f | (value << 4)
     # table[index] = value & 0xf
 
 
@@ -26,9 +27,9 @@ def getPruning(table, index):
     """Extract pruning value"""
 
     if ((index & 1) == 0):
-        res = table[index / 2] & 0x0f
+        res = table[index // 2] & 0x0f
     else:
-        res = (table[index / 2] & 0xf0) >> 4
+        res = (table[index // 2] & 0xf0) >> 4
     return res
     # return table[index] & 0xf
 
@@ -36,7 +37,7 @@ def getPruning(table, index):
 def load_cachetable(name):
     obj = None
     try:
-        with open(os.path.join(cache_dir, name + '.pkl')) as f:
+        with open(os.path.join(cache_dir, name + '.pkl'), 'rb') as f:
             obj = cPickle.load(f)
     except IOError as e:
         log.warning('could not read cache for %s: %s. Recalculating it...', name, e)
@@ -44,7 +45,7 @@ def load_cachetable(name):
 
 
 def dump_cachetable(obj, name):
-    with open(os.path.join(cache_dir, name + '.pkl'), 'w') as f:
+    with open(os.path.join(cache_dir, name + '.pkl'), 'wb') as f:
         cPickle.dump(obj, f)
 
 
@@ -119,12 +120,12 @@ class CoordCube(object):
     # twist = 0 in phase 2.
     twistMove = load_cachetable('twistMove')
     if not twistMove:
-        twistMove = [[0] * N_MOVE for i in xrange(N_TWIST)]   # new short[N_TWIST][N_MOVE]
+        twistMove = [[0] * N_MOVE for i in range(N_TWIST)]   # new short[N_TWIST][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_TWIST):
+        for i in range(N_TWIST):
             a.setTwist(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.cornerMultiply(moveCube[j])
                     twistMove[i][3 * j + k] = a.getTwist()
                 a.cornerMultiply(moveCube[j])   # 4. faceturn restores
@@ -139,12 +140,12 @@ class CoordCube(object):
 
     flipMove = load_cachetable('flipMove')
     if not flipMove:
-        flipMove = [[0] * N_MOVE for i in xrange(N_FLIP)]     # new short[N_FLIP][N_MOVE]
+        flipMove = [[0] * N_MOVE for i in range(N_FLIP)]     # new short[N_FLIP][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_FLIP):
+        for i in range(N_FLIP):
             a.setFlip(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.edgeMultiply(moveCube[j])
                     flipMove[i][3 * j + k] = a.getFlip()
                 a.edgeMultiply(moveCube[j])
@@ -169,12 +170,12 @@ class CoordCube(object):
 
     FRtoBR_Move = load_cachetable('FRtoBR_Move')
     if not FRtoBR_Move:
-        FRtoBR_Move = [[0] * N_MOVE for i in xrange(N_FRtoBR)]    # new short[N_FRtoBR][N_MOVE]
+        FRtoBR_Move = [[0] * N_MOVE for i in range(N_FRtoBR)]    # new short[N_FRtoBR][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_FRtoBR):
+        for i in range(N_FRtoBR):
             a.setFRtoBR(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.edgeMultiply(moveCube[j])
                     FRtoBR_Move[i][3 * j + k] = a.getFRtoBR()
                 a.edgeMultiply(moveCube[j])
@@ -190,12 +191,12 @@ class CoordCube(object):
     log.info('Preparing move table for permutation of six corners. The positions of the DBL and DRB corners are determined by the parity.')
     URFtoDLF_Move = load_cachetable('URFtoDLF_Move')
     if not URFtoDLF_Move:
-        URFtoDLF_Move = [[0] * N_MOVE for i in xrange(N_URFtoDLF)]    # new short[N_URFtoDLF][N_MOVE]
+        URFtoDLF_Move = [[0] * N_MOVE for i in range(N_URFtoDLF)]    # new short[N_URFtoDLF][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_URFtoDLF):
+        for i in range(N_URFtoDLF):
             a.setURFtoDLF(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.cornerMultiply(moveCube[j])
                     URFtoDLF_Move[i][3 * j + k] = a.getURFtoDLF()
                 a.cornerMultiply(moveCube[j])
@@ -210,12 +211,12 @@ class CoordCube(object):
     log.info('Preparing move table for the permutation of six U-face and D-face edges in phase2. The positions of the DL and DB edges are')
     URtoDF_Move = load_cachetable('URtoDF_Move')
     if not URtoDF_Move:
-        URtoDF_Move = [[0] * N_MOVE for i in xrange(N_URtoDF)]    # new short[N_URtoDF][N_MOVE]
+        URtoDF_Move = [[0] * N_MOVE for i in range(N_URtoDF)]    # new short[N_URtoDF][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_URtoDF):
+        for i in range(N_URtoDF):
             a.setURtoDF(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.edgeMultiply(moveCube[j])
                     URtoDF_Move[i][3 * j + k] = a.getURtoDF()
                     # Table values are only valid for phase 2 moves!
@@ -229,12 +230,12 @@ class CoordCube(object):
     log.info('Preparing move table for the three edges UR,UF and UL in phase1.')
     URtoUL_Move = load_cachetable('URtoUL_Move')
     if not URtoUL_Move:
-        URtoUL_Move = [[0] * N_MOVE for i in xrange(N_URtoUL)]    # new short[N_URtoUL][N_MOVE]
+        URtoUL_Move = [[0] * N_MOVE for i in range(N_URtoUL)]    # new short[N_URtoUL][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_URtoUL):
+        for i in range(N_URtoUL):
             a.setURtoUL(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.edgeMultiply(moveCube[j])
                     URtoUL_Move[i][3 * j + k] = a.getURtoUL()
                 a.edgeMultiply(moveCube[j])
@@ -245,12 +246,12 @@ class CoordCube(object):
     log.info('Preparing move table for the three edges UB,DR and DF in phase1.')
     UBtoDF_Move = load_cachetable('UBtoDF_Move')
     if not UBtoDF_Move:
-        UBtoDF_Move = [[0] * N_MOVE for i in xrange(N_UBtoDF)]    # new short[N_UBtoDF][N_MOVE]
+        UBtoDF_Move = [[0] * N_MOVE for i in range(N_UBtoDF)]    # new short[N_UBtoDF][N_MOVE]
         a = CubieCube()
-        for i in xrange(N_UBtoDF):
+        for i in range(N_UBtoDF):
             a.setUBtoDF(i)
-            for j in xrange(6):
-                for k in xrange(3):
+            for j in range(6):
+                for k in range(3):
                     a.edgeMultiply(moveCube[j])
                     UBtoDF_Move[i][3 * j + k] = a.getUBtoDF()
                 a.edgeMultiply(moveCube[j])
@@ -261,11 +262,11 @@ class CoordCube(object):
     log.info('Preparing table to merge the coordinates of the UR,UF,UL and UB,DR,DF edges at the beginning of phase2')
     MergeURtoULandUBtoDF = load_cachetable('MergeURtoULandUBtoDF')
     if not MergeURtoULandUBtoDF:
-        MergeURtoULandUBtoDF = [[0] * 336 for i in xrange(336)]   # new short[336][336]
+        MergeURtoULandUBtoDF = [[0] * 336 for i in range(336)]   # new short[336][336]
         # for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
         # UD-slice and the index is <20160
-        for uRtoUL in xrange(336):
-            for uBtoDF in xrange(336):
+        for uRtoUL in range(336):
+            for uBtoDF in range(336):
                 MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = getURtoDF(uRtoUL, uBtoDF)
         dump_cachetable(MergeURtoULandUBtoDF, 'MergeURtoULandUBtoDF')
 
@@ -276,18 +277,18 @@ class CoordCube(object):
     log.info('Preparing pruning table for the permutation of the corners and the UD-slice edges in phase2.')
     Slice_URFtoDLF_Parity_Prun = load_cachetable('Slice_URFtoDLF_Parity_Prun')
     if not Slice_URFtoDLF_Parity_Prun:
-        Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY / 2)     # new byte[N_SLICE2 * N_URFtoDLF * N_PARITY / 2]
+        Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY // 2)     # new byte[N_SLICE2 * N_URFtoDLF * N_PARITY / 2]
         # Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY)
         depth = 0
         setPruning(Slice_URFtoDLF_Parity_Prun, 0, 0)
         done = 1
         while (done != N_SLICE2 * N_URFtoDLF * N_PARITY):
-            for i in xrange(N_SLICE2 * N_URFtoDLF * N_PARITY):
+            for i in range(N_SLICE2 * N_URFtoDLF * N_PARITY):
                 parity = i % 2
-                URFtoDLF = (i / 2) / N_SLICE2
-                _slice = (i / 2) % N_SLICE2
+                URFtoDLF = (i // 2) // N_SLICE2
+                _slice = (i // 2) % N_SLICE2
                 if getPruning(Slice_URFtoDLF_Parity_Prun, i) == depth:
-                    for j in xrange(18):
+                    for j in range(18):
                         if j in (3, 5, 6, 8, 12, 14, 15, 17):
                             continue
                         else:
@@ -311,18 +312,18 @@ class CoordCube(object):
     log.info('Preparing pruning table for the permutation of the edges in phase2.')
     Slice_URtoDF_Parity_Prun = load_cachetable('Slice_URtoDF_Parity_Prun')
     if not Slice_URtoDF_Parity_Prun:
-        Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY / 2)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
+        Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY // 2)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
         # Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
         depth = 0
         setPruning(Slice_URtoDF_Parity_Prun, 0, 0)
         done = 1
         while (done != N_SLICE2 * N_URtoDF * N_PARITY):
-            for i in xrange(N_SLICE2 * N_URtoDF * N_PARITY):
+            for i in range(N_SLICE2 * N_URtoDF * N_PARITY):
                 parity = i % 2
-                URtoDF = (i / 2) / N_SLICE2
-                _slice = (i / 2) % N_SLICE2
+                URtoDF = (i // 2) // N_SLICE2
+                _slice = (i // 2) % N_SLICE2
                 if (getPruning(Slice_URtoDF_Parity_Prun, i) == depth):
-                    for j in xrange(18):
+                    for j in range(18):
                         if j in (3, 5, 6, 8, 12, 14, 15, 17):
                             continue
                         else:
@@ -345,18 +346,18 @@ class CoordCube(object):
     log.info('Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Twist_Prun = load_cachetable('Slice_Twist_Prun')
     if not Slice_Twist_Prun:
-        Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST / 2 + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
+        Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST // 2 + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
         # Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
         depth = 0
         setPruning(Slice_Twist_Prun, 0, 0)
         done = 1
         while (done != N_SLICE1 * N_TWIST):
-            for i in xrange(N_SLICE1 * N_TWIST):
-                twist = i / N_SLICE1
+            for i in range(N_SLICE1 * N_TWIST):
+                twist = i // N_SLICE1
                 _slice = i % N_SLICE1
                 if (getPruning(Slice_Twist_Prun, i) == depth):
-                    for j in xrange(18):
-                        newSlice = FRtoBR_Move[_slice * 24][j] / 24
+                    for j in range(18):
+                        newSlice = FRtoBR_Move[_slice * 24][j] // 24
                         newTwist = twistMove[twist][j]
                         if (getPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice) == 0x0f):
                             setPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice, (depth + 1) & 0xff)
@@ -371,18 +372,18 @@ class CoordCube(object):
     log.info('Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Flip_Prun = load_cachetable('Slice_Flip_Prun')
     if not Slice_Flip_Prun:
-        Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP / 2)    # new byte[N_SLICE1 * N_FLIP / 2]
+        Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP // 2)    # new byte[N_SLICE1 * N_FLIP / 2]
         # Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP)    # new byte[N_SLICE1 * N_FLIP / 2]
         depth = 0
         setPruning(Slice_Flip_Prun, 0, 0)
         done = 1
         while (done != N_SLICE1 * N_FLIP):
-            for i in xrange(N_SLICE1 * N_FLIP):
-                flip = i / N_SLICE1
+            for i in range(N_SLICE1 * N_FLIP):
+                flip = i // N_SLICE1
                 _slice = i % N_SLICE1
                 if (getPruning(Slice_Flip_Prun, i) == depth):
-                    for j in xrange(18):
-                        newSlice = FRtoBR_Move[_slice * 24][j] / 24
+                    for j in range(18):
+                        newSlice = FRtoBR_Move[_slice * 24][j] // 24
                         newFlip = flipMove[flip][j]
                         if (getPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice) == 0x0f):
                             setPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice, (depth + 1) & 0xff)
