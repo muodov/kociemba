@@ -1,9 +1,11 @@
 import random
+from builtins import range
 
 from .facecube import FaceCube
 from .cubiecube import CubieCube
 from .coordcube import CoordCube
 from .color import colors
+
 
 def verify(s):
     """
@@ -20,13 +22,13 @@ def verify(s):
     """
     count = [0] * 6     # new int[6]
     try:
-        for i in xrange(54):
+        for i in range(54):
             assert s[i] in colors
             count[colors[s[i]]] += 1
     except:
         return -1
 
-    for i in xrange(6):
+    for i in range(6):
         if count[i] != 9:
             return -1
 
