@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/muodov/kociemba.svg?branch=master)](https://travis-ci.org/muodov/kociemba)
+
 # kociemba
 This Python package contains two equivalent implementations (in C and Python) of Herbert Kociemba's two-phase algorithm for solving Rubik's Cube.
 Original Java implementation can be found here: http://kociemba.org/download.htm.
