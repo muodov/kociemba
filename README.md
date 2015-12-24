@@ -6,9 +6,12 @@ These ports are pretty straightforward (not to say dumb) and most probably can b
 
 ## Installation and usage
 This package is published on PyPI and can be installed with:
+
 ```$ pip install kociemba```
 
-It exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below):
+It was tested under Python 2.7 and 3.5.
+
+The package exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below):
 
 ```python
 >>> import kociemba
