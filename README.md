@@ -49,6 +49,13 @@ L5, L6, L7, L8, L9, B1, B2, B3, B4, B5, B6, B7, B8, B9.
 
 So, for example, a definition of a solved cube would be `UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB`
 
+Solution string consists of space-separated parts, each of them represents a single move:
+* A single letter by itself means to turn that face clockwise 90 degrees.
+* A letter followed by an apostrophe means to turn that face counterclockwise 90 degrees.
+* A letter with the number 2 after it means to turn that face 180 degrees. 
+
+e.g. **R U R’ U R U2 R’ U**
+
 ## Standalone tool
 When installing with pip, `kociemba` will also register a command line tool with the same name. So you can also use it like this:
 
