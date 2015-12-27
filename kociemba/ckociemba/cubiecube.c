@@ -212,7 +212,7 @@ void edgeMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 void multiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
     cornerMultiply(cubiecube, b);
-    // edgeMultiply(cubiecube, b);
+    edgeMultiply(cubiecube, b);
 }
 
 void invCubieCube(cubiecube_t* cubiecube, cubiecube_t* c)
