@@ -44,13 +44,22 @@ except ImportError as e:
             return res
 
 
-def solve(cubestring):
+def solve(cubestring, patternstring=None):
     """
     Solve a Rubik's cube using two-phase algorithm.
 
     >>> solve("BBURUDBFUFFFRRFUUFLULUFUDLRRDBBDBDBLUDDFLLRRBRLLLBRDDF")
     "B U' L' D' R' D' L2 D' L F' L' D F2 R2 U R2 B2 U2 L2 F2 D'"
     """
+
+    if patternstring is not None:
+        from .pykociemba.cubiecube import CubieCube
+        from .pykociemba.facecube import FaceCube
+        cc = FaceCube(cubestring).toCubieCube()
+        pattern = CubieCube()
+        FaceCube(patternstring).toCubieCube().invCubieCube(pattern)
+        pattern.multiply(cc)
+        cubestring = pattern.toFaceCube().to_String()
 
     return _solve(cubestring)
 
