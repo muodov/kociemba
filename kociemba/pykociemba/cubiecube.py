@@ -58,6 +58,9 @@ def getURtoDF(idx1, idx2):
 class CubieCube(object):
     """Cube on the cubie level"""
 
+    __s_to_ax = {"U": 0, "R": 1, "F": 2, "D": 3, "L": 4, "B": 5}
+    __s_to_po = {"": 1, "2": 2, "'": 3}
+
     # initialize to Id-Cube
 
     def __init__(self, cp=None, co=None, ep=None, eo=None):
@@ -89,6 +92,13 @@ class CubieCube(object):
                 _butya = FaceCube.edgeFacelet[i][(n + ori) % 2]
                 fcRet.f[_butya] = FaceCube.edgeColor[self.ep[i]][n]
         return fcRet
+
+    def execute(self, maneuver):
+        for move in maneuver.split():
+            ax = self.__s_to_ax[move[0]]
+            po = self.__s_to_po[move[1:]]
+            for i in range(po):
+                self.multiply(moveCube[ax])
 
     def cornerMultiply(self, b):
         """
