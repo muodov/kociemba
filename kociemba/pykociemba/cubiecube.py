@@ -6,7 +6,6 @@ from .edge import UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR, edge_values
 from .facecube import FaceCube
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # n choose k
 def Cnk(n, k):
     if n < k:
@@ -62,16 +61,16 @@ class CubieCube(object):
 
     def __init__(self, cp=None, co=None, ep=None, eo=None):
         # corner permutation
-        self.cp = copy.copy(cp) if cp else [ URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB ]
+        self.cp = copy.copy(cp) if cp else [URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB]
 
         # corner orientation
-        self.co = copy.copy(co) if co else [ 0, 0, 0, 0, 0, 0, 0, 0 ]
+        self.co = copy.copy(co) if co else [0, 0, 0, 0, 0, 0, 0, 0]
 
         # edge permutation
-        self.ep = copy.copy(ep) if ep else [ UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR ]
+        self.ep = copy.copy(ep) if ep else [UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR]
 
         # edge orientation
-        self.eo = copy.copy(eo) if eo else [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+        self.eo = copy.copy(eo) if eo else [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     def toFaceCube(self):
         """return cube in facelet representation"""
@@ -119,7 +118,7 @@ class CubieCube(object):
                 if ori >= 3:
                     ori -= 3    # the composition is a regular cube
 
-            # +++++++++++++++++++++not used in this implementation +++++++++++++++++++++++++++++++++++
+            # +++++++++++++++++++++not used in this implementation +++++++++++++
             elif oriA < 3 and oriB >= 3:    # if cube b is in a mirrored
                 # state...
                 ori = (oriA + oriB) & 0xff
@@ -135,7 +134,7 @@ class CubieCube(object):
                 ori = (oriA - oriB) & 0xff
                 if ori < 0:
                     ori += 3    # the composition is a regular cube
-            # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             cOri.append(ori)
 
@@ -195,7 +194,7 @@ class CubieCube(object):
                 if c.co[i] < 0:
                     c.co[i] += 3
 
-    # ********************************************* Get and set coordinates *********************************************
+    # ********************* Get and set coordinates ***************************
 
     def getTwist(self):
         """return the twist of the 8 corners. 0 <= twist < 3^7"""
@@ -269,8 +268,8 @@ class CubieCube(object):
         return (24 * a + b) & 0xffff
 
     def setFRtoBR(self, idx):
-        sliceEdge = [ FR, FL, BL, BR ]
-        otherEdge = [ UR, UF, UL, UB, DR, DF, DL, DB ]
+        sliceEdge = [FR, FL, BL, BR]
+        otherEdge = [UR, UF, UL, UB, DR, DF, DL, DB]
         b = idx % 24   # Permutation
         a = idx // 24   # Combination
         for i in edge_values:
@@ -319,8 +318,8 @@ class CubieCube(object):
         return (720 * a + b) & 0xffff
 
     def setURFtoDLF(self, idx):
-        corner6 = [ URF, UFL, ULB, UBR, DFR, DLF ]
-        otherCorner = [ DBL, DRB ]
+        corner6 = [URF, UFL, ULB, UBR, DFR, DLF]
+        otherCorner = [DBL, DRB]
         b = idx % 720  # Permutation
         a = idx // 720  # Combination
         for i in corner_values:
@@ -367,8 +366,8 @@ class CubieCube(object):
         return 720 * a + b
 
     def setURtoDF(self, idx):
-        edge6 = [ UR, UF, UL, UB, DR, DF ]
-        otherEdge = [ DL, DB, FR, FL, BL, BR ]
+        edge6 = [UR, UF, UL, UB, DR, DF]
+        otherEdge = [DL, DB, FR, FL, BL, BR]
         b = idx % 720  # Permutation
         a = idx // 720  # Combination
         for i in edge_values:
@@ -416,7 +415,7 @@ class CubieCube(object):
         return (6 * a + b) & 0xffff
 
     def setURtoUL(self, idx):
-        edge3 = [ UR, UF, UL ]
+        edge3 = [UR, UF, UL]
         b = idx % 6    # Permutation
         a = idx // 6    # Combination
         for i in edge_values:
@@ -457,7 +456,7 @@ class CubieCube(object):
         return (6 * a + b) & 0xffff
 
     def setUBtoDF(self, idx):
-        edge3 = [ UB, DR, DF ]
+        edge3 = [UB, DR, DF]
         b = idx % 6    # Permutation
         a = idx // 6    # Combination
         for i in edge_values:
@@ -490,7 +489,7 @@ class CubieCube(object):
         return b
 
     def setURFtoDLB(self, idx):
-        perm = [ URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB ]
+        perm = [URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB]
         for j in range(1, 8):
             k = idx % (j + 1)
             idx //= j + 1
@@ -515,7 +514,7 @@ class CubieCube(object):
         return b
 
     def setURtoBR(self, idx):
-        perm = [ UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR ]
+        perm = [UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR]
         for j in range(1, 12):
             k = idx % (j + 1)
             idx //= j + 1
@@ -570,69 +569,40 @@ class CubieCube(object):
         return 0    # cube ok
 
 
-# ************************************** Moves on the cubie level ***************************************************
+# ************************ Moves on the cubie level ****************************
 
-cpU = [ UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB ]
-coU = [ 0, 0, 0, 0, 0, 0, 0, 0 ]
-epU = [ UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR ]
-eoU = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+cpU = [UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB]
+coU = [0, 0, 0, 0, 0, 0, 0, 0]
+epU = [UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR]
+eoU = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-cpR = [ DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR ]
-coR = [ 2, 0, 0, 1, 1, 0, 0, 2 ]
-epR = [ FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR ]
-eoR = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-cpF = [ UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB ]
-coF = [ 1, 2, 0, 0, 2, 1, 0, 0 ]
-epF = [ UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR ]
-eoF = [ 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0 ]
-cpD = [ URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR ]
-coD = [ 0, 0, 0, 0, 0, 0, 0, 0 ]
-epD = [ UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR ]
-eoD = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-cpL = [ URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB ]
-coL = [ 0, 1, 2, 0, 0, 2, 1, 0 ]
-epL = [ UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR ]
-eoL = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-cpB = [ URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL ]
-coB = [ 0, 0, 1, 2, 0, 0, 2, 1 ]
-epB = [ UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB ]
-eoB = [ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 ]
+cpR = [DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR]
+coR = [2, 0, 0, 1, 1, 0, 0, 2]
+epR = [FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR]
+eoR = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+cpF = [UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB]
+coF = [1, 2, 0, 0, 2, 1, 0, 0]
+epF = [UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR]
+eoF = [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0]
+cpD = [URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR]
+coD = [0, 0, 0, 0, 0, 0, 0, 0]
+epD = [UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR]
+eoD = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+cpL = [URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB]
+coL = [0, 1, 2, 0, 0, 2, 1, 0]
+epL = [UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR]
+eoL = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+cpB = [URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL]
+coB = [0, 0, 1, 2, 0, 0, 2, 1]
+epB = [UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB]
+eoB = [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]
 
 # this CubieCube array represents the 6 basic cube moves
-moveCube = [None] * 6   # new CubieCube[6]
-
-moveCube[0] = CubieCube()
-moveCube[0].cp = cpU
-moveCube[0].co = coU
-moveCube[0].ep = epU
-moveCube[0].eo = eoU
-
-moveCube[1] = CubieCube()
-moveCube[1].cp = cpR
-moveCube[1].co = coR
-moveCube[1].ep = epR
-moveCube[1].eo = eoR
-
-moveCube[2] = CubieCube()
-moveCube[2].cp = cpF
-moveCube[2].co = coF
-moveCube[2].ep = epF
-moveCube[2].eo = eoF
-
-moveCube[3] = CubieCube()
-moveCube[3].cp = cpD
-moveCube[3].co = coD
-moveCube[3].ep = epD
-moveCube[3].eo = eoD
-
-moveCube[4] = CubieCube()
-moveCube[4].cp = cpL
-moveCube[4].co = coL
-moveCube[4].ep = epL
-moveCube[4].eo = eoL
-
-moveCube[5] = CubieCube()
-moveCube[5].cp = cpB
-moveCube[5].co = coB
-moveCube[5].ep = epB
-moveCube[5].eo = eoB
+moveCube = [
+    CubieCube(cp=cpU, co=coU, ep=epU, eo=eoU),
+    CubieCube(cp=cpR, co=coR, ep=epR, eo=eoR),
+    CubieCube(cp=cpF, co=coF, ep=epF, eo=eoF),
+    CubieCube(cp=cpD, co=coD, ep=epD, eo=eoD),
+    CubieCube(cp=cpL, co=coL, ep=epL, eo=eoL),
+    CubieCube(cp=cpB, co=coB, ep=epB, eo=eoB),
+]
