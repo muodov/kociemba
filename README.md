@@ -21,6 +21,11 @@ The package exposes just one function ```solve()```, which accepts a cube defini
 u"D2 R' D' F2 B D R2 D2 R' F2 D' F2 U' B2 L2 U2 D R2 U"
 ```
 
+## Standalone tool
+When installing with pip, `kociemba` will also register a command line tool with the same name. So you can also use it like this:
+
+```$ kociemba <cubestring>```
+
 ## Cube string notation
 The names of the facelet positions of the cube (letters stand for Up, Left, Front, Right, Back, and Down):
 ```
@@ -61,16 +66,11 @@ Solution string consists of space-separated parts, each of them represents a sin
 
 e.g. **R U R’ U R U2 R’ U**
 
-## Standalone tool
-When installing with pip, `kociemba` will also register a command line tool with the same name. So you can also use it like this:
-
-```$ kociemba <cubestring>```
-
 ## C version
 C sources reside in the `ckociemba` folder. Running `make` inside this directory will compile a standalone binary. It accepts a cube representation as a command line argument, and writes the solution to the standard output. You can, of course, use `ckociemba` sources directly in your projects.
 
 ## Performance
-When possible, `kociemba` will use C implementation under the hood. However, if something goes wrong (C version cannot be imported) it will automatically fall back to pure-Python implementation. This is, however, much slower.
+When possible, `kociemba` will use C implementation under the hood. If something goes wrong (C version cannot be imported) it will automatically fall back to pure-Python implementation. However, it will be much slower.
 
 
 ## Testing
