@@ -168,7 +168,7 @@ class CubieCube(object):
         """
 
         self.cornerMultiply(b)
-        # edgeMultiply(b)
+        self.edgeMultiply(b)
 
     def invCubieCube(self, c):
         """
