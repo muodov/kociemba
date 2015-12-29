@@ -46,7 +46,7 @@ void move(coordcube_t* coordcube, int m, const char *cache_dir)
 
 char * join_path(const char *dir, const char *filename)
 {
-    int path_len = strnlen(dir, 200);
+    size_t path_len = strnlen(dir, 200);
     if (path_len == 200) {
         return NULL;
     }
