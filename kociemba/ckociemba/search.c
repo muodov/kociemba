@@ -300,3 +300,22 @@ int totalDepth(search_t* search, int depthPhase1, int maxDepth)
     } while (search->minDistPhase2[n + 1] != 0);
     return depthPhase1 + depthPhase2;
 }
+
+void patternize(char* facelets, char* pattern, char* patternized)
+{
+    facecube_t* start_fc = get_facecube_fromstring(facelets);
+    facecube_t* pattern_fc = get_facecube_fromstring(pattern);
+    cubiecube_t* start_cc = toCubieCube(start_fc);
+    cubiecube_t* pattern_cc = toCubieCube(pattern_fc);
+    cubiecube_t* inv_pattern_cc = get_cubiecube();
+    invCubieCube(pattern_cc, inv_pattern_cc);
+    multiply(inv_pattern_cc, start_cc);
+    facecube_t* fc = toFaceCube(inv_pattern_cc);
+    to_String(fc, patternized);
+    free(start_fc);
+    free(pattern_fc);
+    free(start_cc);
+    free(pattern_cc);
+    free(inv_pattern_cc);
+    free(fc);
+}
