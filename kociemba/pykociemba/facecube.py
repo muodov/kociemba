@@ -53,7 +53,7 @@ class FaceCube(object):
 
     # Gives string representation of a facelet cube
     def to_String(self):
-        return ''.join(self.f)
+        return ''.join(color_keys[c] for c in self.f)
 
     # Gives CubieCube representation of a faceletcube
     def toCubieCube(self):
