@@ -8,8 +8,14 @@ ffi.set_source(
     #include <stdlib.h>
     #include <search.h>
 
-    char* solve(char *cubestring, char *cache_dir)
+    char* solve(char *cubestring, char *patternstring, char *cache_dir)
     {
+        char patternized[64];
+        if (patternstring) {
+            patternize(cubestring, patternstring, patternized);
+            cubestring = patternized;
+        }
+
         char *sol = solution(
             cubestring,
             24,
@@ -28,7 +34,7 @@ ffi.set_source(
         'kociemba/ckociemba/search.c'],
     extra_compile_args=['-std=c99', '-O3'])
 
-ffi.cdef("char* solve(char *cubestring, char *cache_dir);")
+ffi.cdef("char* solve(char *cubestring, char *patternstring, char *cache_dir);")
 
 if __name__ == "__main__":
     ffi.compile(verbose=True)

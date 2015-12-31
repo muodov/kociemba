@@ -55,4 +55,9 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
 // U,D,R2,F2,L2 and B2 are allowed.
 int totalDepth(search_t* search, int depthPhase1, int maxDepth);
 
+
+// Add a pattern to the state of a cube, so that the solution for new_facelets
+// applied to facelets will result into the given pattern
+void patternize(char* facelets, char* pattern, char* patternized);
+
 #endif
