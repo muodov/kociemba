@@ -32,7 +32,7 @@ extern color_t cornerColor[8][3];
 // Map the edge positions to facelet colors.
 extern color_t edgeColor[12][2];
 
-facecube_t* get_facecube();
+facecube_t* get_facecube(void);
 facecube_t* get_facecube_fromstring(char* cubeString);
 
 void to_String(facecube_t* facecube, char* res);
