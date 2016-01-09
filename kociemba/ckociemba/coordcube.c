@@ -20,10 +20,10 @@ short URtoDF_Move[N_URtoDF][N_MOVE] = {{0}};
 short URtoUL_Move[N_URtoUL][N_MOVE] = {{0}};
 short UBtoDF_Move[N_UBtoDF][N_MOVE] = {{0}};
 short MergeURtoULandUBtoDF[336][336] = {{0}};
-char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2] = {0};
-char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2] = {0};
-char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1] = {0};
-char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2] = {0};
+signed char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2] = {0};
+signed char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2] = {0};
+signed char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1] = {0};
+signed char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2] = {0};
 
 int PRUNING_INITED = 0;
 
@@ -256,7 +256,7 @@ void initPruning(const char *cache_dir)
         for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
             Slice_URFtoDLF_Parity_Prun[i] = -1;
         depth = 0;
-        setPruning(Slice_URFtoDLF_Parity_Prun, 0, (char) 0);
+        setPruning(Slice_URFtoDLF_Parity_Prun, 0, 0);
         done = 1;
         while (done != N_SLICE2 * N_URFtoDLF * N_PARITY) {
             for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY; i++) {
@@ -284,7 +284,7 @@ void initPruning(const char *cache_dir)
                             newParity = parityMove[parity][j];
                             if (getPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity) == 0x0f) {
                                 setPruning(Slice_URFtoDLF_Parity_Prun, (N_SLICE2 * newURFtoDLF + newSlice) * 2 + newParity,
-                                        (char) (depth + 1));
+                                        (signed char) (depth + 1));
                                 done++;
                             }
                         }
@@ -300,7 +300,7 @@ void initPruning(const char *cache_dir)
         for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
             Slice_URtoDF_Parity_Prun[i] = -1;
         depth = 0;
-        setPruning(Slice_URtoDF_Parity_Prun, 0, (char) 0);
+        setPruning(Slice_URtoDF_Parity_Prun, 0, 0);
         done = 1;
         while (done != N_SLICE2 * N_URtoDF * N_PARITY) {
             for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++) {
@@ -328,7 +328,7 @@ void initPruning(const char *cache_dir)
                             newParity = parityMove[parity][j];
                             if (getPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity) == 0x0f) {
                                 setPruning(Slice_URtoDF_Parity_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity,
-                                        (char) (depth + 1));
+                                        (signed char) (depth + 1));
                                 done++;
                             }
                         }
@@ -344,7 +344,7 @@ void initPruning(const char *cache_dir)
         for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
             Slice_Twist_Prun[i] = -1;
         depth = 0;
-        setPruning(Slice_Twist_Prun, 0, (char) 0);
+        setPruning(Slice_Twist_Prun, 0, 0);
         done = 1;
         while (done != N_SLICE1 * N_TWIST) {
             for (int i = 0; i < N_SLICE1 * N_TWIST; i++) {
@@ -354,7 +354,7 @@ void initPruning(const char *cache_dir)
                         int newSlice = FRtoBR_Move[slice * 24][j] / 24;
                         int newTwist = twistMove[twist][j];
                         if (getPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice) == 0x0f) {
-                            setPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice, (char) (depth + 1));
+                            setPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice, (signed char) (depth + 1));
                             done++;
                         }
                     }
@@ -369,7 +369,7 @@ void initPruning(const char *cache_dir)
         for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
             Slice_Flip_Prun[i] = -1;
         depth = 0;
-        setPruning(Slice_Flip_Prun, 0, (char) 0);
+        setPruning(Slice_Flip_Prun, 0, 0);
         done = 1;
         while (done != N_SLICE1 * N_FLIP) {
             for (int i = 0; i < N_SLICE1 * N_FLIP; i++) {
@@ -379,7 +379,7 @@ void initPruning(const char *cache_dir)
                         int newSlice = FRtoBR_Move[slice * 24][j] / 24;
                         int newFlip = flipMove[flip][j];
                         if (getPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice) == 0x0f) {
-                            setPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice, (char) (depth + 1));
+                            setPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice, (signed char) (depth + 1));
                             done++;
                         }
                     }
@@ -393,7 +393,7 @@ void initPruning(const char *cache_dir)
     PRUNING_INITED = 1;
 }
 
-void setPruning(char *table, int index, char value) {
+void setPruning(signed char *table, int index, signed char value) {
     if ((index & 1) == 0)
         table[index / 2] &= 0xf0 | value;
     else
@@ -401,8 +401,8 @@ void setPruning(char *table, int index, char value) {
 }
 
 // Extract pruning value
-char getPruning(char *table, int index) {
-    char res;
+signed char getPruning(signed char *table, int index) {
+    signed char res;
 
     if ((index & 1) == 0)
         res = (table[index / 2] & 0x0f);

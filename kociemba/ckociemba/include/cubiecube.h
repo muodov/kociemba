@@ -13,11 +13,11 @@ struct cubiecube {
     // corner permutation
     corner_t cp[8];
     // corner orientation
-    char co[8];
+    signed char co[8];
     // edge permutation
     edge_t ep[12];
     // edge orientation
-    char eo[12];
+    signed char eo[12];
 };
 typedef struct cubiecube cubiecube_t;
 

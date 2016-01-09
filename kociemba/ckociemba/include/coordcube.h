@@ -84,28 +84,28 @@ extern short MergeURtoULandUBtoDF[336][336];
 
 // Pruning table for the permutation of the corners and the UD-slice edges in phase2.
 // The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-extern char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2];
+extern signed char Slice_URFtoDLF_Parity_Prun[N_SLICE2 * N_URFtoDLF * N_PARITY / 2];
 
 // Pruning table for the permutation of the edges in phase2.
 // The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-extern char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2];
+extern signed char Slice_URtoDF_Parity_Prun[N_SLICE2 * N_URtoDF * N_PARITY / 2];
 
 // Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1
 // The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-extern char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1];
+extern signed char Slice_Twist_Prun[N_SLICE1 * N_TWIST / 2 + 1];
 
 // Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1
 // The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-extern char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2];
+extern signed char Slice_Flip_Prun[N_SLICE1 * N_FLIP / 2];
 
 extern int PRUNING_INITED;
 void initPruning(const char *cache_dir);
 
 // Set pruning value in table. Two values are stored in one char.
-void setPruning(char *table, int index, char value);
+void setPruning(signed char *table, int index, signed char value);
 
 // Extract pruning value
-char getPruning(char *table, int index);
+signed char getPruning(signed char *table, int index);
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube);
 void move(coordcube_t* coordcube, int m, const char *cache_dir);
