@@ -32,7 +32,7 @@ ffi.set_source(
         'kociemba/ckociemba/cubiecube.c',
         'kociemba/ckociemba/facecube.c',
         'kociemba/ckociemba/search.c'],
-    extra_compile_args=['-std=c99', '-O3'])
+    extra_compile_args=['-std=c99', '-O3', '-D_XOPEN_SOURCE=700'])
 
 ffi.cdef("char* solve(char *cubestring, char *patternstring, char *cache_dir);")
 

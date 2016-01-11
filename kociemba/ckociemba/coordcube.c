@@ -81,7 +81,8 @@ int check_cached_table(const char* name, void* ptr, int len, const char *cache_d
 void read_from_file(void* ptr, int len, const char* name)
 {
     FILE* f = fopen(name, "r");
-    fread(ptr, len, 1, f);
+    if (!fread(ptr, len, 1, f))
+        ((void)0); // suppress -Wunused-result warning
     fclose(f);
 }
 
