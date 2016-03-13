@@ -13,6 +13,8 @@ This package is published on PyPI and can be installed with:
 
 It was tested under Python 2.7 and 3.5.
 
+On some systems you might need to install libffi system library beforehand. For example, on Debian-based distributions (e.g. Raspbian) you would run `sudo apt-get install libffi-dev`. 
+
 The package exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below):
 
 ```python
