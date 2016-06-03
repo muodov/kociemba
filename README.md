@@ -15,12 +15,17 @@ It was tested under Python 2.7 and 3.5.
 
 On some systems you might need to install libffi system library beforehand. For example, on Debian-based distributions (e.g. Raspbian) you would run `sudo apt-get install libffi-dev`. 
 
-The package exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below):
+The package exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below).
+Optional second argument allows solving to a specific pattern.
 
 ```python
 >>> import kociemba
+
 >>> kociemba.solve('DRLUUBFBRBLURRLRUBLRDDFDLFUFUFFDBRDUBRUFLLFDDBFLUBLRBD')
 u"D2 R' D' F2 B D R2 D2 R' F2 D' F2 U' B2 L2 U2 D R2 U"
+
+>>> kociemba.solve('FLBUULFFLFDURRDBUBUUDDFFBRDDBLRDRFLLRLRULFUDRRBDBBBUFL', 'BBURUDBFUFFFRRFUUFLULUFUDLRRDBBDBDBLUDDFLLRRBRLLLBRDDF')
+u"R' D2 R' U2 R F2 D B2 U' R F' U R2 D L2 D' B2 R2 B2 U' B2"
 ```
 
 ## Standalone tool
