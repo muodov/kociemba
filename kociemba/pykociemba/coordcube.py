@@ -114,7 +114,7 @@ class CoordCube(object):
 
     # ******************************************Phase 1 move tables*****************************************************
 
-    log.info('Preparing move table for the twists of the corners...')
+    log.debug('Preparing move table for the twists of the corners...')
     # Move table for the twists of the corners
     # twist < 2187 in phase 2.
     # twist = 0 in phase 2.
@@ -136,7 +136,7 @@ class CoordCube(object):
     # Move table for the flips of the edges
     # flip < 2048 in phase 1
     # flip = 0 in phase 2.
-    log.info('Preparing move table for the flips of the edges')
+    log.debug('Preparing move table for the flips of the edges')
 
     flipMove = load_cachetable('flipMove')
     if not flipMove:
@@ -161,7 +161,7 @@ class CoordCube(object):
     ]
 
     # ***********************************Phase 1 and 2 movetable********************************************************
-    log.info('Preparing move table for the four UD-slice edges FR, FL, Bl and BR')
+    log.debug('Preparing move table for the four UD-slice edges FR, FL, Bl and BR')
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Move table for the four UD-slice edges FR, FL, Bl and BR
     # FRtoBRMove < 11880 in phase 1
@@ -188,7 +188,7 @@ class CoordCube(object):
     # URFtoDLF < 20160 in phase 1
     # URFtoDLF < 20160 in phase 2
     # URFtoDLF = 0 for solved cube.
-    log.info('Preparing move table for permutation of six corners. The positions of the DBL and DRB corners are determined by the parity.')
+    log.debug('Preparing move table for permutation of six corners. The positions of the DBL and DRB corners are determined by the parity.')
     URFtoDLF_Move = load_cachetable('URFtoDLF_Move')
     if not URFtoDLF_Move:
         URFtoDLF_Move = [[0] * N_MOVE for i in range(N_URFtoDLF)]    # new short[N_URFtoDLF][N_MOVE]
@@ -208,7 +208,7 @@ class CoordCube(object):
     # URtoDF < 665280 in phase 1
     # URtoDF < 20160 in phase 2
     # URtoDF = 0 for solved cube.
-    log.info('Preparing move table for the permutation of six U-face and D-face edges in phase2. The positions of the DL and DB edges are')
+    log.debug('Preparing move table for the permutation of six U-face and D-face edges in phase2. The positions of the DL and DB edges are')
     URtoDF_Move = load_cachetable('URtoDF_Move')
     if not URtoDF_Move:
         URtoDF_Move = [[0] * N_MOVE for i in range(N_URtoDF)]    # new short[N_URtoDF][N_MOVE]
@@ -227,7 +227,7 @@ class CoordCube(object):
     # **************************helper move tables to compute URtoDF for the beginning of phase2************************
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Move table for the three edges UR,UF and UL in phase1.
-    log.info('Preparing move table for the three edges UR,UF and UL in phase1.')
+    log.debug('Preparing move table for the three edges UR,UF and UL in phase1.')
     URtoUL_Move = load_cachetable('URtoUL_Move')
     if not URtoUL_Move:
         URtoUL_Move = [[0] * N_MOVE for i in range(N_URtoUL)]    # new short[N_URtoUL][N_MOVE]
@@ -243,7 +243,7 @@ class CoordCube(object):
 
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Move table for the three edges UB,DR and DF in phase1.
-    log.info('Preparing move table for the three edges UB,DR and DF in phase1.')
+    log.debug('Preparing move table for the three edges UB,DR and DF in phase1.')
     UBtoDF_Move = load_cachetable('UBtoDF_Move')
     if not UBtoDF_Move:
         UBtoDF_Move = [[0] * N_MOVE for i in range(N_UBtoDF)]    # new short[N_UBtoDF][N_MOVE]
@@ -259,7 +259,7 @@ class CoordCube(object):
 
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Table to merge the coordinates of the UR,UF,UL and UB,DR,DF edges at the beginning of phase2
-    log.info('Preparing table to merge the coordinates of the UR,UF,UL and UB,DR,DF edges at the beginning of phase2')
+    log.debug('Preparing table to merge the coordinates of the UR,UF,UL and UB,DR,DF edges at the beginning of phase2')
     MergeURtoULandUBtoDF = load_cachetable('MergeURtoULandUBtoDF')
     if not MergeURtoULandUBtoDF:
         MergeURtoULandUBtoDF = [[0] * 336 for i in range(336)]   # new short[336][336]
@@ -274,7 +274,7 @@ class CoordCube(object):
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Pruning table for the permutation of the corners and the UD-slice edges in phase2.
     # The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-    log.info('Preparing pruning table for the permutation of the corners and the UD-slice edges in phase2.')
+    log.debug('Preparing pruning table for the permutation of the corners and the UD-slice edges in phase2.')
     Slice_URFtoDLF_Parity_Prun = load_cachetable('Slice_URFtoDLF_Parity_Prun')
     if not Slice_URFtoDLF_Parity_Prun:
         Slice_URFtoDLF_Parity_Prun = [-1] * (N_SLICE2 * N_URFtoDLF * N_PARITY // 2)     # new byte[N_SLICE2 * N_URFtoDLF * N_PARITY / 2]
@@ -309,7 +309,7 @@ class CoordCube(object):
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Pruning table for the permutation of the edges in phase2.
     # The pruning table entries give a lower estimation for the number of moves to reach the solved cube.
-    log.info('Preparing pruning table for the permutation of the edges in phase2.')
+    log.debug('Preparing pruning table for the permutation of the edges in phase2.')
     Slice_URtoDF_Parity_Prun = load_cachetable('Slice_URtoDF_Parity_Prun')
     if not Slice_URtoDF_Parity_Prun:
         Slice_URtoDF_Parity_Prun = [-1] * (N_SLICE2 * N_URtoDF * N_PARITY // 2)  # new byte[N_SLICE2 * N_URtoDF * N_PARITY / 2]
@@ -343,7 +343,7 @@ class CoordCube(object):
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1
     # The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-    log.info('Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1')
+    log.debug('Pruning table for the twist of the corners and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Twist_Prun = load_cachetable('Slice_Twist_Prun')
     if not Slice_Twist_Prun:
         Slice_Twist_Prun = [-1] * (N_SLICE1 * N_TWIST // 2 + 1)  # new byte[N_SLICE1 * N_TWIST / 2 + 1]
@@ -369,7 +369,7 @@ class CoordCube(object):
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1
     # The pruning table entries give a lower estimation for the number of moves to reach the H-subgroup.
-    log.info('Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1')
+    log.debug('Pruning table for the flip of the edges and the position (not permutation) of the UD-slice edges in phase1')
     Slice_Flip_Prun = load_cachetable('Slice_Flip_Prun')
     if not Slice_Flip_Prun:
         Slice_Flip_Prun = [-1] * (N_SLICE1 * N_FLIP // 2)    # new byte[N_SLICE1 * N_FLIP / 2]

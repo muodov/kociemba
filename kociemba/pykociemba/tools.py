@@ -55,6 +55,7 @@ def randomCube():
     fc = cc.toFaceCube()
     return fc.to_String()
 
+
 def randomLastLayerCube():
     """
     Generates a cube with a random last layer.
@@ -64,9 +65,9 @@ def randomLastLayerCube():
     cc.setFlip(random.choice([0, 24, 40, 48, 72, 80, 96, 120]))
     cc.setTwist(random.randint(0, 26))
     while True:
-        perms = [ 0, 624, 3744, 3840, 4344, 4440, 26064, 26160, 26664, 26760,
-            27360, 27984, 30384, 30480, 30984, 31080, 31680, 32304, 35304,
-            35400, 36000, 36624, 39744, 39840 ]
+        perms = [0, 624, 3744, 3840, 4344, 4440, 26064, 26160, 26664, 26760,
+                 27360, 27984, 30384, 30480, 30984, 31080, 31680, 32304, 35304,
+                 35400, 36000, 36624, 39744, 39840]
         cc.setURFtoDLB(random.choice(perms))
         cc.setURtoBR(random.choice(perms))
 
