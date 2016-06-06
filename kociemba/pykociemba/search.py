@@ -3,7 +3,7 @@ from builtins import range
 from .color import colors
 from .facecube import FaceCube
 from .coordcube import CoordCube, getPruning
-
+from .cubiecube import CubieCube
 
 class Search(object):
     """Class Search implements the Two-Phase-Algorithm."""
@@ -312,3 +312,10 @@ class Search(object):
                 break
 
         return depthPhase1 + depthPhase2
+
+def patternize(facelets, pattern):
+    facelets_cc = FaceCube(facelets).toCubieCube()
+    patternized_cc = CubieCube()
+    FaceCube(pattern).toCubieCube().invCubieCube(patternized_cc)
+    patternized_cc.multiply(facelets_cc)
+    return patternized_cc.toFaceCube().to_String()

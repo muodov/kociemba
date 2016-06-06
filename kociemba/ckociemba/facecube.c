@@ -81,7 +81,7 @@ void to_String(facecube_t* facecube, char* res)
 
 cubiecube_t* toCubieCube(facecube_t* facecube)
 {
-    unsigned char ori;
+    signed char ori;
     cubiecube_t* ccRet = (cubiecube_t*) calloc(1, sizeof(cubiecube_t));
     for (int i = 0; i < 8; i++)
         ccRet->cp[i] = URF;// invalidate corners
@@ -100,7 +100,7 @@ cubiecube_t* toCubieCube(facecube_t* facecube)
             if (col1 == cornerColor[j][1] && col2 == cornerColor[j][2]) {
                 // in cornerposition i we have cornercubie j
                 ccRet->cp[i] = j;
-                ccRet->co[i] = (char) (ori % 3);
+                ccRet->co[i] = ori % 3;
                 break;
             }
         }

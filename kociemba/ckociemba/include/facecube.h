@@ -5,12 +5,15 @@
 #include "color.h"
 #include "corner.h"
 #include "edge.h"
-#include "cubiecube.h"
 
 //Cube on the facelet level
-typedef struct {
+struct facecube {
     color_t f[54];
-} facecube_t;
+};
+typedef struct facecube facecube_t;
+
+// forward declaration
+struct cubiecube;
 
 // Map the corner positions to facelet positions. cornerFacelet[URF.ordinal()][0] e.g. gives the position of the
 // facelet in the URF corner position, which defines the orientation.<br>
@@ -29,10 +32,10 @@ extern color_t cornerColor[8][3];
 // Map the edge positions to facelet colors.
 extern color_t edgeColor[12][2];
 
-facecube_t* get_facecube();
+facecube_t* get_facecube(void);
 facecube_t* get_facecube_fromstring(char* cubeString);
 
 void to_String(facecube_t* facecube, char* res);
-cubiecube_t* toCubieCube(facecube_t* facecube);
+struct cubiecube* toCubieCube(facecube_t* facecube);
 
 #endif

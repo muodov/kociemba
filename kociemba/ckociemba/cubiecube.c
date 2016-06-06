@@ -5,30 +5,30 @@ cubiecube_t * get_moveCube()
 {
     static cubiecube_t moveCube[6];
     static int moveCube_initialized = 0;
-    static const corner_t   cpU[8]  = { UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB };
-    static const char       coU[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const edge_t     epU[12] = { UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR };
-    static const char       eoU[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const corner_t   cpR[8]  = { DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR };
-    static const char       coR[8]  = { 2, 0, 0, 1, 1, 0, 0, 2 };
-    static const edge_t     epR[12] = { FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR };
-    static const char       eoR[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const corner_t   cpF[8]  = { UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB };
-    static const char       coF[8]  = { 1, 2, 0, 0, 2, 1, 0, 0 };
-    static const edge_t     epF[12] = { UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR };
-    static const char       eoF[12] = { 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0 };
-    static const corner_t   cpD[8]  = { URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR };
-    static const char       coD[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const edge_t     epD[12] = { UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR };
-    static const char       eoD[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const corner_t   cpL[8]  = { URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB };
-    static const char       coL[8]  = { 0, 1, 2, 0, 0, 2, 1, 0 };
-    static const edge_t     epL[12] = { UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR };
-    static const char       eoL[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    static const corner_t   cpB[8]  = { URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL };
-    static const char       coB[8]  = { 0, 0, 1, 2, 0, 0, 2, 1 };
-    static const edge_t     epB[12] = { UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB };
-    static const char       eoB[12] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 };
+    static const corner_t     cpU[8]  = { UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB };
+    static const signed char  coU[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const edge_t       epU[12] = { UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR };
+    static const signed char  eoU[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const corner_t     cpR[8]  = { DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR };
+    static const signed char  coR[8]  = { 2, 0, 0, 1, 1, 0, 0, 2 };
+    static const edge_t       epR[12] = { FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR };
+    static const signed char  eoR[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const corner_t     cpF[8]  = { UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB };
+    static const signed char  coF[8]  = { 1, 2, 0, 0, 2, 1, 0, 0 };
+    static const edge_t       epF[12] = { UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR };
+    static const signed char  eoF[12] = { 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0 };
+    static const corner_t     cpD[8]  = { URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR };
+    static const signed char  coD[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const edge_t       epD[12] = { UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR };
+    static const signed char  eoD[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const corner_t     cpL[8]  = { URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB };
+    static const signed char  coL[8]  = { 0, 1, 2, 0, 0, 2, 1, 0 };
+    static const edge_t       epL[12] = { UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR };
+    static const signed char  eoL[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const corner_t     cpB[8]  = { URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL };
+    static const signed char  coB[8]  = { 0, 0, 1, 2, 0, 0, 2, 1 };
+    static const edge_t       epB[12] = { UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB };
+    static const signed char  eoB[12] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 };
 
     if (!moveCube_initialized) {
         memcpy(moveCube[0].cp, cpU, sizeof(cpU));
@@ -65,9 +65,9 @@ cubiecube_t* get_cubiecube()
     cubiecube_t* result = (cubiecube_t *) calloc(1, sizeof(cubiecube_t));
 
     static const corner_t   cp[8]   = { URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB };
-    static const char       co[8]   = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const signed char       co[8]   = { 0, 0, 0, 0, 0, 0, 0, 0 };
     static const edge_t     ep[12]  = { UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR };
-    static const char       eo[12]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const signed char       eo[12]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     memcpy(result->cp, cp, sizeof(cp));
     memcpy(result->co, co, sizeof(co));
@@ -133,7 +133,7 @@ facecube_t* toFaceCube(cubiecube_t* cubiecube)
     for(int i = 0; i < CORNER_COUNT; i++) {
         int j = cubiecube->cp[i];// cornercubie with index j is at
         // cornerposition with index i
-        char ori = cubiecube->co[i];// Orientation of this cubie
+        signed char ori = cubiecube->co[i];// Orientation of this cubie
         for (int n = 0; n < 3; n++)
             fcRet->f[cornerFacelet[i][(n + ori) % 3]] = cornerColor[j][n];
     }
@@ -141,7 +141,7 @@ facecube_t* toFaceCube(cubiecube_t* cubiecube)
     {
         int j = cubiecube->ep[i];// edgecubie with index j is at edgeposition
         // with index i
-        char ori = cubiecube->eo[i];// Orientation of this cubie
+        signed char ori = cubiecube->eo[i];// Orientation of this cubie
         for (int n = 0; n < 2; n++)
             fcRet->f[edgeFacelet[i][(n + ori) % 2]] = edgeColor[j][n];
     }
@@ -151,17 +151,17 @@ facecube_t* toFaceCube(cubiecube_t* cubiecube)
 void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
     corner_t cPerm[8] = {0};
-    char cOri[8] = {0};
+    signed char cOri[8] = {0};
     for (int corn = 0; corn < CORNER_COUNT; corn++) {
         cPerm[corn] = cubiecube->cp[b->cp[corn]];
 
-        char oriA = cubiecube->co[b->cp[corn]];
-        char oriB = b->co[corn];
-        char ori = 0;
+        signed char oriA = cubiecube->co[b->cp[corn]];
+        signed char oriB = b->co[corn];
+        signed char ori = 0;
 
         if (oriA < 3 && oriB < 3) // if both cubes are regular cubes...
         {
-            ori = (char) (oriA + oriB); // just do an addition modulo 3 here
+            ori = oriA + oriB; // just do an addition modulo 3 here
             if (ori >= 3)
                 ori -= 3; // the composition is a regular cube
 
@@ -169,19 +169,19 @@ void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
         } else if (oriA < 3 && oriB >= 3) // if cube b is in a mirrored
         // state...
         {
-            ori = (char) (oriA + oriB);
+            ori = oriA + oriB;
             if (ori >= 6)
                 ori -= 3; // the composition is a mirrored cube
         } else if (oriA >= 3 && oriB < 3) // if cube a is an a mirrored
         // state...
         {
-            ori = (char) (oriA - oriB);
+            ori = oriA - oriB;
             if (ori < 3)
                 ori += 3; // the composition is a mirrored cube
         } else if (oriA >= 3 && oriB >= 3) // if both cubes are in mirrored
         // states...
         {
-            ori = (char) (oriA - oriB);
+            ori = oriA - oriB;
             if (ori < 0)
                 ori += 3; // the composition is a regular cube
             // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -197,11 +197,11 @@ void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 void edgeMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
     edge_t ePerm[12] = {0};
-    char eOri[12] = {0};
+    signed char eOri[12] = {0};
 
     for(int edge = 0; edge < EDGE_COUNT; edge++) {
         ePerm[edge] = cubiecube->ep[b->ep[edge]];
-        eOri[edge] = (char) ((b->eo[edge] + cubiecube->eo[b->ep[edge]]) % 2);
+        eOri[edge] = (b->eo[edge] + cubiecube->eo[b->ep[edge]]) % 2;
     }
     for(int e = 0; e < EDGE_COUNT; e++) {
         cubiecube->ep[e] = ePerm[e];
@@ -212,7 +212,7 @@ void edgeMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 void multiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
     cornerMultiply(cubiecube, b);
-    // edgeMultiply(cubiecube, b);
+    edgeMultiply(cubiecube, b);
 }
 
 void invCubieCube(cubiecube_t* cubiecube, cubiecube_t* c)
@@ -224,12 +224,12 @@ void invCubieCube(cubiecube_t* cubiecube, cubiecube_t* c)
     for (int corn = 0; corn < CORNER_COUNT; corn++)
         c->cp[cubiecube->cp[corn]] = corn;
     for (int corn = 0; corn < CORNER_COUNT; corn++) {
-        char ori = cubiecube->co[c->cp[corn]];
+        signed char ori = cubiecube->co[c->cp[corn]];
         if (ori >= 3)// Just for completeness. We do not invert mirrored
             // cubes in the program.
             c->co[corn] = ori;
         else {// the standard case
-            c->co[corn] = (char) -ori;
+            c->co[corn] = -ori;
             if (c->co[corn] < 0)
                 c->co[corn] += 3;
         }
@@ -248,10 +248,10 @@ void setTwist(cubiecube_t* cubiecube, short twist)
 {
     int twistParity = 0;
     for (int i = DRB - 1; i >= URF; i--) {
-        twistParity += cubiecube->co[i] = (char) (twist % 3);
+        twistParity += cubiecube->co[i] = (signed char) (twist % 3);
         twist /= 3;
     }
-    cubiecube->co[DRB] = (char) ((3 - twistParity % 3) % 3);
+    cubiecube->co[DRB] = (signed char) ((3 - twistParity % 3) % 3);
 }
 
 short getFlip(cubiecube_t* cubiecube)
@@ -266,10 +266,10 @@ void setFlip(cubiecube_t* cubiecube, short flip)
 {
     int flipParity = 0;
     for (int i = BR - 1; i >= UR; i--) {
-        flipParity += cubiecube->eo[i] = (char) (flip % 2);
+        flipParity += cubiecube->eo[i] = (signed char) (flip % 2);
         flip /= 2;
     }
-    cubiecube->eo[BR] = (char) ((2 - flipParity % 2) % 2);
+    cubiecube->eo[BR] = (signed char) ((2 - flipParity % 2) % 2);
 }
 
 short cornerParity(cubiecube_t* cubiecube)

@@ -9,8 +9,9 @@ try:
     from .ckociembawrapper import ffi, lib
     cache_dir = os.path.join(os.path.dirname(__file__), 'cprunetables')
 
-    def _solve(s):
-        res = lib.solve(s.encode('utf-8'), cache_dir.encode('utf-8'))
+    def _solve(cube, pattern):
+        pattern_utf8 = pattern.encode('utf-8') if pattern is not None else ffi.NULL
+        res = lib.solve(cube.encode('utf-8'), pattern_utf8, cache_dir.encode('utf-8'))
         if res != ffi.NULL:
             return ffi.string(res).strip().decode('utf-8')
         else:
@@ -26,7 +27,7 @@ except ImportError as e:
                   SlowContextWarning)
     from .pykociemba import search
 
-    def _solve(s):
+    def _solve(cube, pattern):
         errors = {
             'Error 1': 'There is not exactly one facelet of each colour',
             'Error 2': 'Not all 12 edges exist exactly once',
@@ -37,21 +38,26 @@ except ImportError as e:
             'Error 7': 'No solution exists for the given maxDepth',
             'Error 8': 'Timeout, no solution within given time'
         }
-        res = search.Search().solution(s, 24, 1000, False).strip()
+        if pattern is not None:
+            cube = search.patternize(cube, pattern)
+        res = search.Search().solution(cube, 24, 1000, False).strip()
         if res in errors:
             raise ValueError(errors[res])
         else:
             return res
 
 
-def solve(cubestring):
+def solve(cubestring, patternstring=None):
     """
     Solve a Rubik's cube using two-phase algorithm.
 
     >>> solve("BBURUDBFUFFFRRFUUFLULUFUDLRRDBBDBDBLUDDFLLRRBRLLLBRDDF")
     "B U' L' D' R' D' L2 D' L F' L' D F2 R2 U R2 B2 U2 L2 F2 D'"
+
+    >>> kociemba.solve('FLBUULFFLFDURRDBUBUUDDFFBRDDBLRDRFLLRLRULFUDRRBDBBBUFL', 'BBURUDBFUFFFRRFUUFLULUFUDLRRDBBDBDBLUDDFLLRRBRLLLBRDDF')
+    u"R' D2 R' U2 R F2 D B2 U' R F' U R2 D L2 D' B2 R2 B2 U' B2"
     """
 
-    return _solve(cubestring)
+    return _solve(cubestring, patternstring)
 
 __all__ = ['solve']

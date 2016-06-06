@@ -8,21 +8,25 @@
 #include "edge.h"
 
 //Cube on the cubie level
-typedef struct {
+struct cubiecube {
     // initialize to Id-Cube
     // corner permutation
     corner_t cp[8];
     // corner orientation
-    char co[8];
+    signed char co[8];
     // edge permutation
     edge_t ep[12];
     // edge orientation
-    char eo[12];
-} cubiecube_t;
+    signed char eo[12];
+};
+typedef struct cubiecube cubiecube_t;
+
+// forward declaration
+struct facecube;
 
 // this CubieCube array represents the 6 basic cube moves
-cubiecube_t* get_moveCube();
-cubiecube_t* get_cubiecube();
+cubiecube_t* get_moveCube(void);
+cubiecube_t* get_cubiecube(void);
 
 // n choose k
 int Cnk(int n, int k);
@@ -30,7 +34,7 @@ void rotateLeft_corner(corner_t* arr, int l, int r);
 void rotateRight_corner(corner_t* arr, int l, int r);
 void rotateLeft_edge(edge_t* arr, int l, int r);
 void rotateRight_edge(edge_t* arr, int l, int r);
-// facecube_t* toFaceCube(cubiecube_t* cubiecube);
+struct facecube* toFaceCube(cubiecube_t* cubiecube);
 void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b);
 void edgeMultiply(cubiecube_t* cubiecube, cubiecube_t* b);
 void multiply(cubiecube_t* cubiecube, cubiecube_t* b);
