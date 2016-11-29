@@ -1,9 +1,9 @@
 import copy
 from builtins import range
 
-from .corner import URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB, corner_values
-from .edge import UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR, edge_values
-from .facecube import FaceCube
+from kociemba.pykociemba.corner import URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB, corner_values
+from kociemba.pykociemba.edge import UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR, edge_values
+from kociemba.pykociemba.facecube import FaceCube
 
 
 # n choose k

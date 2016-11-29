@@ -1,9 +1,9 @@
 import time
 from builtins import range
-from .color import colors
-from .facecube import FaceCube
-from .coordcube import CoordCube, getPruning
-from .cubiecube import CubieCube
+from kociemba.pykociemba.color import colors
+from kociemba.pykociemba.facecube import FaceCube
+from kociemba.pykociemba.coordcube import CoordCube, getPruning
+from kociemba.pykociemba.cubiecube import CubieCube
 
 class Search(object):
     """Class Search implements the Two-Phase-Algorithm."""

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-from .facecube import FaceCube
-from .color import colors
+from kociemba.pykociemba.facecube import FaceCube
+from kociemba.pykociemba.color import colors
 
 def verify(s):
     """

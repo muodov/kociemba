@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from .search import Search
+from kociemba.pykociemba.search import Search
 
 '''
 Example Cube:

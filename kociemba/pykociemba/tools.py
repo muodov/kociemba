@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+
+import argparse
 import random
 from builtins import range
 
-from .facecube import FaceCube
-from .cubiecube import CubieCube
-from .coordcube import CoordCube
-from .color import colors
+from kociemba.pykociemba.facecube import FaceCube
+from kociemba.pykociemba.cubiecube import CubieCube
+from kociemba.pykociemba.coordcube import CoordCube
+from kociemba.pykociemba.color import colors
 
 
 def verify(s):
@@ -75,3 +78,12 @@ def randomLastLayerCube():
             break
     fc = cc.toFaceCube()
     return fc.to_String()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--random', action='store_true', help='Return random cube', default=None)
+    args = parser.parse_args()
+
+    if args.random:
+        print(randomCube())
