@@ -7,7 +7,7 @@ try:
 except ImportError:
     import pickle as cPickle
 
-from .cubiecube import CubieCube, moveCube, getURtoDF
+from kociemba.pykociemba.cubiecube import CubieCube, moveCube, getURtoDF
 
 log = logging.getLogger(__name__)
 
