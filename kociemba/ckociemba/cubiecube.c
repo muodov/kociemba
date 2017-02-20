@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "cubiecube.h"
 #include "facecube.h"
 
@@ -627,29 +628,42 @@ int verify(cubiecube_t* cubiecube)
     for(int e = 0; e < EDGE_COUNT; e++)
         edgeCount[cubiecube->ep[e]]++;
     for (int i = 0; i < 12; i++)
-        if (edgeCount[i] != 1)
+        if (edgeCount[i] != 1) {
+            printf("ERROR: edgeCount[%d] is %d instead of 1\n", i, edgeCount[i]);
             return -2;
+        }
 
     for (int i = 0; i < 12; i++)
         sum += cubiecube->eo[i];
-    if (sum % 2 != 0)
+
+    if (sum % 2 != 0) {
+        printf("ERROR: sum is %d, must be even\n", sum);
+        //for (int i = 0; i < 12; i++)
+        //    printf("cubiecube->eo[%d] is %d\n", i, cubiecube->eo[i]);
         return -3;
+    }
 
     int cornerCount[8] = {0};
     for(int c = 0; c < CORNER_COUNT; c++)
         cornerCount[cubiecube->cp[c]]++;
     for (int i = 0; i < 8; i++)
-        if (cornerCount[i] != 1)
-            return -4;// missing corners
+        if (cornerCount[i] != 1) {
+            printf("ERROR: missing corners\n");
+            return -4;
+        }
 
     sum = 0;
     for (int i = 0; i < 8; i++)
         sum += cubiecube->co[i];
-    if (sum % 3 != 0)
-        return -5;// twisted corner
+    if (sum % 3 != 0) {
+        printf("ERROR: twisted corner\n");
+        return -5;
+    }
 
-    if ((edgeParity(cubiecube) ^ cornerParity(cubiecube)) != 0)
-        return -6;// parity error
+    if ((edgeParity(cubiecube) ^ cornerParity(cubiecube)) != 0) {
+        printf("ERROR: parity error\n");
+        return -6;
+    }
 
     return 0;// cube ok
 }

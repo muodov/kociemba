@@ -1,5 +1,6 @@
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "search.h"
 #include "color.h"
 #include "facecube.h"
@@ -92,12 +93,15 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
     for (int i = 0; i < 6; i++)
         if (count[i] != 9) {
             free(search);
+            printf("ERROR: count[%d] is %d, must be 9\n", i, count[i]);
             return NULL;
         }
 
     facecube_t* fc = get_facecube_fromstring(facelets);
     cubiecube_t* cc = toCubieCube(fc);
-    if ((s = verify(cc)) != 0) {
+    int verify_result = verify(cc);
+
+    if (verify_result == -2 || verify_result == -4 || verify_result == -5) {
         free(search);
         return NULL;
     }
@@ -137,13 +141,16 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
                 do {// increment axis
                     if (++search->ax[n] > 5) {
 
-                        if (time(NULL) - tStart > timeOut)
+                        if (time(NULL) - tStart > timeOut) {
+                            printf("ERROR: time failure\n");
                             return NULL;
+                        }
 
                         if (n == 0) {
-                            if (depthPhase1 >= maxDepth)
+                            if (depthPhase1 >= maxDepth) {
+                                printf("ERROR: depth %d >= %d\n", depthPhase1, maxDepth);
                                 return NULL;
-                            else {
+                            } else {
                                 depthPhase1++;
                                 search->ax[n] = 0;
                                 search->po[n] = 1;
