@@ -13,7 +13,7 @@ python:
   - "pypy"
 # command to install dependencies
 install:
-  - pip install setuptools_scm
+  - pip install -U setuptools
   - python setup.py install
 # command to run tests
 script: python setup.py test
