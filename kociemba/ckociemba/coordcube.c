@@ -1,10 +1,6 @@
-#include <errno.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <unistd.h>
+#include <stdio.h>
+#include "prunetable_helpers.h"
 #include "coordcube.h"
 #include "cubiecube.h"
 
@@ -44,67 +40,6 @@ void move(coordcube_t* coordcube, int m, const char *cache_dir)
         coordcube->URtoDF = MergeURtoULandUBtoDF[coordcube->URtoUL][coordcube->UBtoDF];
 }
 
-char * join_path(const char *dir, const char *filename)
-{
-    size_t path_len = strnlen(dir, 200);
-    if (path_len == 200) {
-        return NULL;
-    }
-    char *fpath = calloc(path_len + 32, 1);
-    strcpy(fpath, dir);
-    strcat(fpath, "/");
-    strncat(fpath, filename, 30);
-    return fpath;
-}
-
-int check_cached_table(const char* name, void* ptr, int len, const char *cache_dir)
-{
-    char *fname = join_path(cache_dir, name);
-    if (fname == NULL) {
-        fprintf(stderr, "Path to cache tables is too long\n");
-        return -1;
-    }
-    int res = 0;
-    if (access(fname, F_OK | R_OK) != -1) {
-        // fprintf(stderr, "Found cache for %s. Loading...", name);
-        read_from_file(ptr, len, fname);
-        // fprintf(stderr, "done.\n");
-        res = 0;
-    } else {
-        fprintf(stderr, "Cache table %s was not found. Recalculating.\n", fname);
-        res = 1;
-    }
-    free(fname);
-    return res;
-}
-
-void read_from_file(void* ptr, int len, const char* name)
-{
-    FILE* f = fopen(name, "r");
-    if (!fread(ptr, len, 1, f))
-        ((void)0); // suppress -Wunused-result warning
-    fclose(f);
-}
-
-void dump_to_file(void* ptr, int len, const char* name, const char *cache_dir)
-{
-    int status;
-    status = mkdir(cache_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (status == 0 || errno == EEXIST) {
-        char *fname = join_path(cache_dir, name);
-        if (fname == NULL) {
-            fprintf(stderr, "Path to cache tables is too long\n");
-        } else {
-            FILE* f = fopen(fname, "w");
-            fwrite(ptr, len, 1, f);
-            free(fname);
-            fclose(f);
-        }
-    } else {
-        fprintf(stderr, "cannot create cache tables directory\n");
-    }
-}
-
 coordcube_t* get_coordcube(cubiecube_t* cubiecube)
 {
     coordcube_t* result = (coordcube_t *) calloc(1, sizeof(coordcube_t));
@@ -127,11 +62,13 @@ void initPruning(const char *cache_dir)
     cubiecube_t* moveCube = get_moveCube();
 
     if(check_cached_table("twistMove", (void*) twistMove, sizeof(twistMove), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_TWIST; i++) {
+        for (i = 0; i < N_TWIST; i++) {
             setTwist(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     cornerMultiply(a, &moveCube[j]);
                     twistMove[i][3 * j + k] = getTwist(a);
                 }
@@ -143,11 +80,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("flipMove", (void*) flipMove, sizeof(flipMove), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_FLIP; i++) {
+        for (i = 0; i < N_FLIP; i++) {
             setFlip(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     edgeMultiply(a, &moveCube[j]);
                     flipMove[i][3 * j + k] = getFlip(a);
                 }
@@ -159,11 +98,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("FRtoBR_Move", (void*) FRtoBR_Move, sizeof(FRtoBR_Move), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_FRtoBR; i++) {
+        for (i = 0; i < N_FRtoBR; i++) {
             setFRtoBR(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     edgeMultiply(a, &moveCube[j]);
                     FRtoBR_Move[i][3 * j + k] = getFRtoBR(a);
                 }
@@ -175,11 +116,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("URFtoDLF_Move", (void*) URFtoDLF_Move, sizeof(URFtoDLF_Move), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_URFtoDLF; i++) {
+        for (i = 0; i < N_URFtoDLF; i++) {
             setURFtoDLF(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     cornerMultiply(a, &moveCube[j]);
                     URFtoDLF_Move[i][3 * j + k] = getURFtoDLF(a);
                 }
@@ -191,11 +134,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("URtoDF_Move", (void*) URtoDF_Move, sizeof(URtoDF_Move), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_URtoDF; i++) {
+        for (i = 0; i < N_URtoDF; i++) {
             setURtoDF(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     edgeMultiply(a, &moveCube[j]);
                     URtoDF_Move[i][3 * j + k] = (short) getURtoDF(a);
                     // Table values are only valid for phase 2 moves!
@@ -209,11 +154,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("URtoUL_Move", (void*) URtoUL_Move, sizeof(URtoUL_Move), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_URtoUL; i++) {
+        for (i = 0; i < N_URtoUL; i++) {
             setURtoUL(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     edgeMultiply(a, &moveCube[j]);
                     URtoUL_Move[i][3 * j + k] = getURtoUL(a);
                 }
@@ -225,11 +172,13 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("UBtoDF_Move", (void*) UBtoDF_Move, sizeof(UBtoDF_Move), cache_dir) != 0) {
+        short i;
+        int k, j;
         a = get_cubiecube();
-        for (short i = 0; i < N_UBtoDF; i++) {
+        for (i = 0; i < N_UBtoDF; i++) {
             setUBtoDF(a, i);
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 3; k++) {
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
                     edgeMultiply(a, &moveCube[j]);
                     UBtoDF_Move[i][3 * j + k] = getUBtoDF(a);
                 }
@@ -243,29 +192,30 @@ void initPruning(const char *cache_dir)
     if(check_cached_table("MergeURtoULandUBtoDF", (void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), cache_dir) != 0) {
         // for i, j <336 the six edges UR,UF,UL,UB,DR,DF are not in the
         // UD-slice and the index is <20160
-        for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
-            for (short uBtoDF = 0; uBtoDF < 336; uBtoDF++) {
+        short uRtoUL, uBtoDF;
+        for (uRtoUL = 0; uRtoUL < 336; uRtoUL++) {
+            for (uBtoDF = 0; uBtoDF < 336; uBtoDF++) {
                 MergeURtoULandUBtoDF[uRtoUL][uBtoDF] = (short) getURtoDF_standalone(uRtoUL, uBtoDF);
             }
         }
         dump_to_file((void*) MergeURtoULandUBtoDF, sizeof(MergeURtoULandUBtoDF), "MergeURtoULandUBtoDF", cache_dir);
     }
 
-    int depth, done;
-
     if(check_cached_table("Slice_URFtoDLF_Parity_Prun", (void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), cache_dir) != 0) {
-        for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
+        int depth = 0, done = 1;
+        int i, j;
+        for (i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY / 2; i++)
             Slice_URFtoDLF_Parity_Prun[i] = -1;
-        depth = 0;
         setPruning(Slice_URFtoDLF_Parity_Prun, 0, 0);
-        done = 1;
+        printf("1\n");
         while (done != N_SLICE2 * N_URFtoDLF * N_PARITY) {
-            for (int i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY; i++) {
+            // printf("%d %d %d\n", done, N_SLICE2 * N_URFtoDLF * N_PARITY, depth);
+            for (i = 0; i < N_SLICE2 * N_URFtoDLF * N_PARITY; i++) {
                 int parity = i % 2;
                 int URFtoDLF = (i / 2) / N_SLICE2;
                 int slice = (i / 2) % N_SLICE2;
                 if (getPruning(Slice_URFtoDLF_Parity_Prun, i) == depth) {
-                    for (int j = 0; j < 18; j++) {
+                    for (j = 0; j < 18; j++) {
                         int newSlice;
                         int newURFtoDLF;
                         int newParity;
@@ -294,22 +244,24 @@ void initPruning(const char *cache_dir)
             }
             depth++;
         }
+        printf("2\n");
         dump_to_file((void*) Slice_URFtoDLF_Parity_Prun, sizeof(Slice_URFtoDLF_Parity_Prun), "Slice_URFtoDLF_Parity_Prun", cache_dir);
+        printf("3\n");
     }
 
     if(check_cached_table("Slice_URtoDF_Parity_Prun", (void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), cache_dir) != 0) {
-        for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
+        int depth = 0, done = 1;
+        int i, j;
+        for (i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY / 2; i++)
             Slice_URtoDF_Parity_Prun[i] = -1;
-        depth = 0;
         setPruning(Slice_URtoDF_Parity_Prun, 0, 0);
-        done = 1;
         while (done != N_SLICE2 * N_URtoDF * N_PARITY) {
-            for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++) {
+            for (i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++) {
                 int parity = i % 2;
                 int URtoDF = (i / 2) / N_SLICE2;
                 int slice = (i / 2) % N_SLICE2;
                 if (getPruning(Slice_URtoDF_Parity_Prun, i) == depth) {
-                    for (int j = 0; j < 18; j++) {
+                    for (j = 0; j < 18; j++) {
                         int newSlice;
                         int newURtoDF;
                         int newParity;
@@ -340,18 +292,18 @@ void initPruning(const char *cache_dir)
         }
         dump_to_file((void*) Slice_URtoDF_Parity_Prun, sizeof(Slice_URtoDF_Parity_Prun), "Slice_URtoDF_Parity_Prun", cache_dir);
     }
-    
+
     if(check_cached_table("Slice_Twist_Prun", (void*) Slice_Twist_Prun, sizeof(Slice_Twist_Prun), cache_dir) != 0) {
-        for (int i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
+        int depth = 0, done = 1;
+        int i, j;
+        for (i = 0; i < N_SLICE1 * N_TWIST / 2 + 1; i++)
             Slice_Twist_Prun[i] = -1;
-        depth = 0;
         setPruning(Slice_Twist_Prun, 0, 0);
-        done = 1;
         while (done != N_SLICE1 * N_TWIST) {
-            for (int i = 0; i < N_SLICE1 * N_TWIST; i++) {
+            for (i = 0; i < N_SLICE1 * N_TWIST; i++) {
                 int twist = i / N_SLICE1, slice = i % N_SLICE1;
                 if (getPruning(Slice_Twist_Prun, i) == depth) {
-                    for (int j = 0; j < 18; j++) {
+                    for (j = 0; j < 18; j++) {
                         int newSlice = FRtoBR_Move[slice * 24][j] / 24;
                         int newTwist = twistMove[twist][j];
                         if (getPruning(Slice_Twist_Prun, N_SLICE1 * newTwist + newSlice) == 0x0f) {
@@ -367,16 +319,16 @@ void initPruning(const char *cache_dir)
     }
 
     if(check_cached_table("Slice_Flip_Prun", (void*) Slice_Flip_Prun, sizeof(Slice_Flip_Prun), cache_dir) != 0) {
-        for (int i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
+        int depth = 0, done = 1;
+        int i, j;
+        for (i = 0; i < N_SLICE1 * N_FLIP / 2; i++)
             Slice_Flip_Prun[i] = -1;
-        depth = 0;
         setPruning(Slice_Flip_Prun, 0, 0);
-        done = 1;
         while (done != N_SLICE1 * N_FLIP) {
-            for (int i = 0; i < N_SLICE1 * N_FLIP; i++) {
+            for (i = 0; i < N_SLICE1 * N_FLIP; i++) {
                 int flip = i / N_SLICE1, slice = i % N_SLICE1;
                 if (getPruning(Slice_Flip_Prun, i) == depth) {
-                    for (int j = 0; j < 18; j++) {
+                    for (j = 0; j < 18; j++) {
                         int newSlice = FRtoBR_Move[slice * 24][j] / 24;
                         int newFlip = flipMove[flip][j];
                         if (getPruning(Slice_Flip_Prun, N_SLICE1 * newFlip + newSlice) == 0x0f) {
@@ -412,4 +364,3 @@ signed char getPruning(signed char *table, int index) {
 
     return res;
 }
-

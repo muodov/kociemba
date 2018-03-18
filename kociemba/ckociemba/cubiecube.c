@@ -73,7 +73,7 @@ cubiecube_t* get_cubiecube()
     memcpy(result->co, co, sizeof(co));
     memcpy(result->ep, ep, sizeof(ep));
     memcpy(result->eo, eo, sizeof(eo));
-    
+
     return result;
 }
 
@@ -93,8 +93,9 @@ int Cnk(int n, int k) {
 void rotateLeft_corner(corner_t* arr, int l, int r)
 // Left rotation of all array elements between l and r
 {
+    int i;
     corner_t temp = arr[l];
-    for (int i = l; i < r; i++)
+    for (i = l; i < r; i++)
         arr[i] = arr[i + 1];
     arr[r] = temp;
 }
@@ -102,8 +103,9 @@ void rotateLeft_corner(corner_t* arr, int l, int r)
 void rotateRight_corner(corner_t* arr, int l, int r)
 // Right rotation of all array elements between l and r
 {
+    int i;
     corner_t temp = arr[r];
-    for (int i = r; i > l; i--)
+    for (i = r; i > l; i--)
         arr[i] = arr[i - 1];
     arr[l] = temp;
 }
@@ -112,8 +114,9 @@ void rotateRight_corner(corner_t* arr, int l, int r)
 void rotateLeft_edge(edge_t* arr, int l, int r)
 // Left rotation of all array elements between l and r
 {
+    int i;
     edge_t temp = arr[l];
-    for (int i = l; i < r; i++)
+    for (i = l; i < r; i++)
         arr[i] = arr[i + 1];
     arr[r] = temp;
 }
@@ -121,28 +124,31 @@ void rotateLeft_edge(edge_t* arr, int l, int r)
 void rotateRight_edge(edge_t* arr, int l, int r)
 // Right rotation of all array elements between l and r
 {
+    int i;
     edge_t temp = arr[r];
-    for (int i = r; i > l; i--)
+    for (i = r; i > l; i--)
         arr[i] = arr[i - 1];
     arr[l] = temp;
 }
 
 facecube_t* toFaceCube(cubiecube_t* cubiecube)
 {
+    int i, j, n;
+    signed char ori;
     facecube_t* fcRet = get_facecube();
-    for(int i = 0; i < CORNER_COUNT; i++) {
-        int j = cubiecube->cp[i];// cornercubie with index j is at
+    for(i = 0; i < CORNER_COUNT; i++) {
+        j = cubiecube->cp[i];// cornercubie with index j is at
         // cornerposition with index i
-        signed char ori = cubiecube->co[i];// Orientation of this cubie
-        for (int n = 0; n < 3; n++)
+        ori = cubiecube->co[i];// Orientation of this cubie
+        for (n = 0; n < 3; n++)
             fcRet->f[cornerFacelet[i][(n + ori) % 3]] = cornerColor[j][n];
     }
-    for(int i = 0; i < EDGE_COUNT; i++)
+    for(i = 0; i < EDGE_COUNT; i++)
     {
-        int j = cubiecube->ep[i];// edgecubie with index j is at edgeposition
+        j = cubiecube->ep[i];// edgecubie with index j is at edgeposition
         // with index i
-        signed char ori = cubiecube->eo[i];// Orientation of this cubie
-        for (int n = 0; n < 2; n++)
+        ori = cubiecube->eo[i];// Orientation of this cubie
+        for (n = 0; n < 2; n++)
             fcRet->f[edgeFacelet[i][(n + ori) % 2]] = edgeColor[j][n];
     }
     return fcRet;
@@ -150,14 +156,16 @@ facecube_t* toFaceCube(cubiecube_t* cubiecube)
 
 void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
+    int corn;
+    signed char oriA, oriB, ori;
     corner_t cPerm[8] = {0};
     signed char cOri[8] = {0};
-    for (int corn = 0; corn < CORNER_COUNT; corn++) {
+    for (corn = 0; corn < CORNER_COUNT; corn++) {
         cPerm[corn] = cubiecube->cp[b->cp[corn]];
 
-        signed char oriA = cubiecube->co[b->cp[corn]];
-        signed char oriB = b->co[corn];
-        signed char ori = 0;
+        oriA = cubiecube->co[b->cp[corn]];
+        oriB = b->co[corn];
+        ori = 0;
 
         if (oriA < 3 && oriB < 3) // if both cubes are regular cubes...
         {
@@ -188,24 +196,25 @@ void cornerMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
         }
         cOri[corn] = ori;
     }
-    for(int c = 0; c < CORNER_COUNT; c++) {
-        cubiecube->cp[c] = cPerm[c];
-        cubiecube->co[c] = cOri[c];
+    for(corn = 0; corn < CORNER_COUNT; corn++) {
+        cubiecube->cp[corn] = cPerm[corn];
+        cubiecube->co[corn] = cOri[corn];
     }
 }
 
 void edgeMultiply(cubiecube_t* cubiecube, cubiecube_t* b)
 {
+    int edge;
     edge_t ePerm[12] = {0};
     signed char eOri[12] = {0};
 
-    for(int edge = 0; edge < EDGE_COUNT; edge++) {
+    for(edge = 0; edge < EDGE_COUNT; edge++) {
         ePerm[edge] = cubiecube->ep[b->ep[edge]];
         eOri[edge] = (b->eo[edge] + cubiecube->eo[b->ep[edge]]) % 2;
     }
-    for(int e = 0; e < EDGE_COUNT; e++) {
-        cubiecube->ep[e] = ePerm[e];
-        cubiecube->eo[e] = eOri[e];
+    for(edge = 0; edge < EDGE_COUNT; edge++) {
+        cubiecube->ep[edge] = ePerm[edge];
+        cubiecube->eo[edge] = eOri[edge];
     }
 }
 
@@ -217,13 +226,14 @@ void multiply(cubiecube_t* cubiecube, cubiecube_t* b)
 
 void invCubieCube(cubiecube_t* cubiecube, cubiecube_t* c)
 {
-    for (int edge = 0; edge < EDGE_COUNT; edge++)
+    int edge, corn;
+    for (edge = 0; edge < EDGE_COUNT; edge++)
         c->ep[cubiecube->ep[edge]] = edge;
-    for (int edge = 0; edge < EDGE_COUNT; edge++)
+    for (edge = 0; edge < EDGE_COUNT; edge++)
         c->eo[edge] = cubiecube->eo[c->ep[edge]];
-    for (int corn = 0; corn < CORNER_COUNT; corn++)
+    for (corn = 0; corn < CORNER_COUNT; corn++)
         c->cp[cubiecube->cp[corn]] = corn;
-    for (int corn = 0; corn < CORNER_COUNT; corn++) {
+    for (corn = 0; corn < CORNER_COUNT; corn++) {
         signed char ori = cubiecube->co[c->cp[corn]];
         if (ori >= 3)// Just for completeness. We do not invert mirrored
             // cubes in the program.
@@ -239,7 +249,8 @@ void invCubieCube(cubiecube_t* cubiecube, cubiecube_t* c)
 short getTwist(cubiecube_t* cubiecube)
 {
     short ret = 0;
-    for (int i = URF; i < DRB; i++)
+    int i;
+    for (i = URF; i < DRB; i++)
         ret = (short) (3 * ret + cubiecube->co[i]);
     return ret;
 }
@@ -247,7 +258,8 @@ short getTwist(cubiecube_t* cubiecube)
 void setTwist(cubiecube_t* cubiecube, short twist)
 {
     int twistParity = 0;
-    for (int i = DRB - 1; i >= URF; i--) {
+    int i;
+    for (i = DRB - 1; i >= URF; i--) {
         twistParity += cubiecube->co[i] = (signed char) (twist % 3);
         twist /= 3;
     }
@@ -256,16 +268,18 @@ void setTwist(cubiecube_t* cubiecube, short twist)
 
 short getFlip(cubiecube_t* cubiecube)
 {
+    int i;
     short ret = 0;
-    for (int i = UR; i < BR; i++)
+    for (i = UR; i < BR; i++)
         ret = (short) (2 * ret + cubiecube->eo[i]);
     return ret;
 }
 
 void setFlip(cubiecube_t* cubiecube, short flip)
 {
+    int i;
     int flipParity = 0;
-    for (int i = BR - 1; i >= UR; i--) {
+    for (i = BR - 1; i >= UR; i--) {
         flipParity += cubiecube->eo[i] = (signed char) (flip % 2);
         flip /= 2;
     }
@@ -274,9 +288,10 @@ void setFlip(cubiecube_t* cubiecube, short flip)
 
 short cornerParity(cubiecube_t* cubiecube)
 {
+    int i, j;
     int s = 0;
-    for (int i = DRB; i >= URF + 1; i--)
-        for (int j = i - 1; j >= URF; j--)
+    for (i = DRB; i >= URF + 1; i--)
+        for (j = i - 1; j >= URF; j--)
             if (cubiecube->cp[j] > cubiecube->cp[i])
                 s++;
     return (short) (s % 2);
@@ -284,9 +299,10 @@ short cornerParity(cubiecube_t* cubiecube)
 
 short edgeParity(cubiecube_t* cubiecube)
 {
+    int i, j;
     int s = 0;
-    for (int i = BR; i >= UR + 1; i--)
-        for (int j = i - 1; j >= UR; j--)
+    for (i = BR; i >= UR + 1; i--)
+        for (j = i - 1; j >= UR; j--)
             if (cubiecube->ep[j] > cubiecube->ep[i])
                 s++;
     return (short) (s % 2);
@@ -294,17 +310,17 @@ short edgeParity(cubiecube_t* cubiecube)
 
 short getFRtoBR(cubiecube_t* cubiecube)
 {
-    int a = 0, x = 0;
+    int a = 0, x = 0, j;
+    int b = 0;
     edge_t edge4[4] = {0};
     // compute the index a < (12 choose 4) and the permutation array perm.
-    for (int j = BR; j >= UR; j--)
+    for (j = BR; j >= UR; j--)
         if (FR <= cubiecube->ep[j] && cubiecube->ep[j] <= BR) {
             a += Cnk(11 - j, x + 1);
             edge4[3 - x++] = cubiecube->ep[j];
         }
 
-    int b = 0;
-    for (int j = 3; j > 0; j--)// compute the index b < 4! for the
+    for (j = 3; j > 0; j--)// compute the index b < 4! for the
     // permutation in perm
     {
         int k = 0;
@@ -318,15 +334,15 @@ short getFRtoBR(cubiecube_t* cubiecube)
 }
 void setFRtoBR(cubiecube_t* cubiecube, short idx)
 {
-    int x;
+    int x, j, k, e;
     edge_t sliceEdge[4] = { FR, FL, BL, BR };
     edge_t otherEdge[8] = { UR, UF, UL, UB, DR, DF, DL, DB };
     int b = idx % 24; // Permutation
     int a = idx / 24; // Combination
-    for (int e = 0; e < EDGE_COUNT; e++)
+    for (e = 0; e < EDGE_COUNT; e++)
         cubiecube->ep[e] = DB;// Use UR to invalidate all edges
 
-    for (int j = 1, k; j < 4; j++)// generate permutation from index b
+    for (j = 1; j < 4; j++)// generate permutation from index b
     {
         k = b % (j + 1);
         b /= j + 1;
@@ -335,30 +351,29 @@ void setFRtoBR(cubiecube_t* cubiecube, short idx)
     }
 
     x = 3;// generate combination and set slice edges
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (a - Cnk(11 - j, x + 1) >= 0) {
             cubiecube->ep[j] = sliceEdge[3 - x];
             a -= Cnk(11 - j, x-- + 1);
         }
     x = 0; // set the remaining edges UR..DB
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (cubiecube->ep[j] == DB)
             cubiecube->ep[j] = otherEdge[x++];
 }
 
 short getURFtoDLF(cubiecube_t* cubiecube)
 {
-    int a = 0, x = 0;
+    int a = 0, x = 0, j, b = 0;
     corner_t corner6[6] = {0};
     // compute the index a < (8 choose 6) and the corner permutation.
-    for (int j = URF; j <= DRB; j++)
+    for (j = URF; j <= DRB; j++)
         if (cubiecube->cp[j] <= DLF) {
             a += Cnk(j, x + 1);
             corner6[x++] = cubiecube->cp[j];
         }
 
-    int b = 0;
-    for (int j = 5; j > 0; j--)// compute the index b < 6! for the
+    for (j = 5; j > 0; j--)// compute the index b < 6! for the
     // permutation in corner6
     {
         int k = 0;
@@ -378,10 +393,11 @@ void setURFtoDLF(cubiecube_t* cubiecube, short idx)
     corner_t otherCorner[2] = { DBL, DRB };
     int b = idx % 720; // Permutation
     int a = idx / 720; // Combination
-    for(int c = 0; c < CORNER_COUNT; c++)
+    int c, j, k;
+    for(c = 0; c < CORNER_COUNT; c++)
         cubiecube->cp[c] = DRB;// Use DRB to invalidate all corners
 
-    for (int j = 1, k; j < 6; j++)// generate permutation from index b
+    for (j = 1; j < 6; j++)// generate permutation from index b
     {
         k = b % (j + 1);
         b /= j + 1;
@@ -389,13 +405,13 @@ void setURFtoDLF(cubiecube_t* cubiecube, short idx)
             rotateRight_corner(corner6, 0, j);
     }
     x = 5;// generate combination and set corners
-    for (int j = DRB; j >= 0; j--)
+    for (j = DRB; j >= 0; j--)
         if (a - Cnk(j, x + 1) >= 0) {
             cubiecube->cp[j] = corner6[x];
             a -= Cnk(j, x-- + 1);
         }
     x = 0;
-    for (int j = URF; j <= DRB; j++)
+    for (j = URF; j <= DRB; j++)
         if (cubiecube->cp[j] == DRB)
             cubiecube->cp[j] = otherCorner[x++];
 }
@@ -403,16 +419,16 @@ void setURFtoDLF(cubiecube_t* cubiecube, short idx)
 int getURtoDF(cubiecube_t* cubiecube)
 {
     int a = 0, x = 0;
+    int b = 0, j;
     edge_t edge6[6] = {0};
     // compute the index a < (12 choose 6) and the edge permutation.
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (cubiecube->ep[j] <= DF) {
             a += Cnk(j, x + 1);
             edge6[x++] = cubiecube->ep[j];
         }
 
-    int b = 0;
-    for (int j = 5; j > 0; j--)// compute the index b < 6! for the
+    for (j = 5; j > 0; j--)// compute the index b < 6! for the
     // permutation in edge6
     {
         int k = 0;
@@ -427,16 +443,16 @@ int getURtoDF(cubiecube_t* cubiecube)
 
 void setURtoDF(cubiecube_t* cubiecube, int idx)
 {
-    int x;
+    int x, e, j, k;
     edge_t edge6[6] = { UR, UF, UL, UB, DR, DF };
     edge_t otherEdge[6] = { DL, DB, FR, FL, BL, BR };
     int b = idx % 720; // Permutation
     int a = idx / 720; // Combination
 
-    for(int e = 0; e < EDGE_COUNT; e++)
+    for(e = 0; e < EDGE_COUNT; e++)
         cubiecube->ep[e] = BR;// Use BR to invalidate all edges
 
-    for (int j = 1, k; j < 6; j++)// generate permutation from index b
+    for (j = 1; j < 6; j++)// generate permutation from index b
     {
         k = b % (j + 1);
         b /= j + 1;
@@ -444,30 +460,29 @@ void setURtoDF(cubiecube_t* cubiecube, int idx)
             rotateRight_edge(edge6, 0, j);
     }
     x = 5;// generate combination and set edges
-    for (int j = BR; j >= 0; j--)
+    for (j = BR; j >= 0; j--)
         if (a - Cnk(j, x + 1) >= 0) {
             cubiecube->ep[j] = edge6[x];
             a -= Cnk(j, x-- + 1);
         }
     x = 0; // set the remaining edges DL..BR
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (cubiecube->ep[j] == BR)
             cubiecube->ep[j] = otherEdge[x++];
 }
 
 short getURtoUL(cubiecube_t* cubiecube)
 {
-    int a = 0, x = 0;
+    int a = 0, b = 0, x = 0, j;
     edge_t edge3[3] = {0};
     // compute the index a < (12 choose 3) and the edge permutation.
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (cubiecube->ep[j] <= UL) {
             a += Cnk(j, x + 1);
             edge3[x++] = cubiecube->ep[j];
         }
 
-    int b = 0;
-    for (int j = 2; j > 0; j--)// compute the index b < 3! for the
+    for (j = 2; j > 0; j--)// compute the index b < 3! for the
     // permutation in edge3
     {
         int k = 0;
@@ -482,22 +497,22 @@ short getURtoUL(cubiecube_t* cubiecube)
 
 void setURtoUL(cubiecube_t* cubiecube, short idx)
 {
-    int x;
+    int x, e, j, k;
     edge_t edge3[3] = { UR, UF, UL };
     int b = idx % 6; // Permutation
     int a = idx / 6; // Combination
-    for(int e = 0; e < EDGE_COUNT; e++) {
+    for(e = 0; e < EDGE_COUNT; e++) {
         cubiecube->ep[e] = BR;// Use BR to invalidate all edges
     }
 
-    for (int j = 1, k; j < 3; j++) {// generate permutation from index b
+    for (j = 1; j < 3; j++) {// generate permutation from index b
         k = b % (j + 1);
         b /= j + 1;
         while (k-- > 0)
             rotateRight_edge(edge3, 0, j);
     }
     x = 2;// generate combination and set edges
-    for (int j = BR; j >= 0; j--) {
+    for (j = BR; j >= 0; j--) {
         if (a - Cnk(j, x + 1) >= 0) {
             cubiecube->ep[j] = edge3[x];
             a -= Cnk(j, x-- + 1);
@@ -507,17 +522,16 @@ void setURtoUL(cubiecube_t* cubiecube, short idx)
 
 short getUBtoDF(cubiecube_t* cubiecube)
 {
-    int a = 0, x = 0;
+    int a = 0, x = 0, b = 0, j;
     edge_t edge3[3] = {0};
     // compute the index a < (12 choose 3) and the edge permutation.
-    for (int j = UR; j <= BR; j++)
+    for (j = UR; j <= BR; j++)
         if (UB <= cubiecube->ep[j] && cubiecube->ep[j] <= DF) {
             a += Cnk(j, x + 1);
             edge3[x++] = cubiecube->ep[j];
         }
 
-    int b = 0;
-    for (int j = 2; j > 0; j--)// compute the index b < 3! for the
+    for (j = 2; j > 0; j--)// compute the index b < 3! for the
     // permutation in edge3
     {
         int k = 0;
@@ -532,14 +546,14 @@ short getUBtoDF(cubiecube_t* cubiecube)
 
 void setUBtoDF(cubiecube_t* cubiecube, short idx)
 {
-    int x;
+    int x, e, j, k;
     edge_t edge3[3] = { UB, DR, DF };
     int b = idx % 6; // Permutation
     int a = idx / 6; // Combination
-    for (int e = 0; e < EDGE_COUNT; e++)
+    for (e = 0; e < EDGE_COUNT; e++)
         cubiecube->ep[e] = BR;// Use BR to invalidate all edges
 
-    for (int j = 1, k; j < 3; j++)// generate permutation from index b
+    for (j = 1; j < 3; j++)// generate permutation from index b
     {
         k = b % (j + 1);
         b /= j + 1;
@@ -547,7 +561,7 @@ void setUBtoDF(cubiecube_t* cubiecube, short idx)
             rotateRight_edge(edge3, 0, j);
     }
     x = 2;// generate combination and set edges
-    for (int j = BR; j >= 0; j--)
+    for (j = BR; j >= 0; j--)
         if (a - Cnk(j, x + 1) >= 0) {
             cubiecube->ep[j] = edge3[x];
             a -= Cnk(j, x-- + 1);
@@ -557,10 +571,10 @@ void setUBtoDF(cubiecube_t* cubiecube, short idx)
 int getURFtoDLB(cubiecube_t* cubiecube)
 {
     corner_t perm[8] = {0};
-    int b = 0;
-    for (int i = 0; i < 8; i++)
+    int b = 0, i, j;
+    for (i = 0; i < 8; i++)
         perm[i] = cubiecube->cp[i];
-    for (int j = 7; j > 0; j--)// compute the index b < 8! for the permutation in perm
+    for (j = 7; j > 0; j--)// compute the index b < 8! for the permutation in perm
     {
         int k = 0;
         while (perm[j] != j) {
@@ -575,25 +589,26 @@ int getURFtoDLB(cubiecube_t* cubiecube)
 void setURFtoDLB(cubiecube_t* cubiecube, int idx)
 {
     corner_t perm[8] = { URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB };
-    int k;
-    for (int j = 1; j < 8; j++) {
+    int k, j;
+    int x = 7;// set corners
+    for (j = 1; j < 8; j++) {
         k = idx % (j + 1);
         idx /= j + 1;
         while (k-- > 0)
             rotateRight_corner(perm, 0, j);
     }
-    int x = 7;// set corners
-    for (int j = 7; j >= 0; j--)
+
+    for (j = 7; j >= 0; j--)
         cubiecube->cp[j] = perm[x--];
 }
 
 int getURtoBR(cubiecube_t* cubiecube)
 {
     edge_t perm[12] = {0};
-    int b = 0;
-    for (int i = 0; i < 12; i++)
+    int b = 0, i, j;
+    for (i = 0; i < 12; i++)
         perm[i] = cubiecube->ep[i];
-    for (int j = 11; j > 0; j--)// compute the index b < 12! for the permutation in perm
+    for (j = 11; j > 0; j--)// compute the index b < 12! for the permutation in perm
     {
         int k = 0;
         while (perm[j] != j) {
@@ -608,42 +623,43 @@ int getURtoBR(cubiecube_t* cubiecube)
 void setURtoBR(cubiecube_t* cubiecube, int idx)
 {
     edge_t perm[12] = { UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR };
-    int k;
-    for (int j = 1; j < 12; j++) {
+    int k, j;
+    int x = 11;// set edges
+    for (j = 1; j < 12; j++) {
         k = idx % (j + 1);
         idx /= j + 1;
         while (k-- > 0)
             rotateRight_edge(perm, 0, j);
     }
-    int x = 11;// set edges
-    for (int j = 11; j >= 0; j--)
+    for (j = 11; j >= 0; j--)
         cubiecube->ep[j] = perm[x--];
 }
 
 int verify(cubiecube_t* cubiecube)
 {
-    int sum = 0;
+    int sum = 0, e, i, c;
     int edgeCount[12] = {0};
-    for(int e = 0; e < EDGE_COUNT; e++)
+    int cornerCount[8] = {0};
+
+    for(e = 0; e < EDGE_COUNT; e++)
         edgeCount[cubiecube->ep[e]]++;
-    for (int i = 0; i < 12; i++)
+    for (i = 0; i < 12; i++)
         if (edgeCount[i] != 1)
             return -2;
 
-    for (int i = 0; i < 12; i++)
+    for (i = 0; i < 12; i++)
         sum += cubiecube->eo[i];
     if (sum % 2 != 0)
         return -3;
 
-    int cornerCount[8] = {0};
-    for(int c = 0; c < CORNER_COUNT; c++)
+    for(c = 0; c < CORNER_COUNT; c++)
         cornerCount[cubiecube->cp[c]]++;
-    for (int i = 0; i < 8; i++)
+    for (i = 0; i < 8; i++)
         if (cornerCount[i] != 1)
             return -4;// missing corners
 
     sum = 0;
-    for (int i = 0; i < 8; i++)
+    for (i = 0; i < 8; i++)
         sum += cubiecube->co[i];
     if (sum % 3 != 0)
         return -5;// twisted corner
@@ -656,11 +672,12 @@ int verify(cubiecube_t* cubiecube)
 
 int getURtoDF_standalone(short idx1, short idx2)
 {
+    int res, i;
     cubiecube_t *a = get_cubiecube();
     cubiecube_t *b = get_cubiecube();
     setURtoUL(a, idx1);
     setUBtoDF(b, idx2);
-    for (int i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++) {
         if (a->ep[i] != BR) {
             if (b->ep[i] != BR) {// collision
                 return -1;
@@ -669,9 +686,8 @@ int getURtoDF_standalone(short idx1, short idx2)
             }
         }
     }
-    int res = getURtoDF(b);
+    res = getURtoDF(b);
     free(a);
     free(b);
     return res;
 }
-

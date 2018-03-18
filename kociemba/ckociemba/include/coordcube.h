@@ -33,7 +33,7 @@ typedef struct {
 } coordcube_t;
 
 // ******************************************Phase 1 move tables*****************************************************
-    
+
 // Move table for the twists of the corners
 // twist < 2187 in phase 2.
 // twist = 0 in phase 2.
@@ -109,8 +109,5 @@ signed char getPruning(signed char *table, int index);
 
 coordcube_t* get_coordcube(cubiecube_t* cubiecube);
 void move(coordcube_t* coordcube, int m, const char *cache_dir);
-int check_cached_table(const char* name, void* ptr, int len, const char *cache_dir);
-void dump_to_file(void* ptr, int len, const char* name, const char *cache_dir);
-void read_from_file(void* ptr, int len, const char* name);
 
 #endif

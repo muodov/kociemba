@@ -1,5 +1,6 @@
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "search.h"
 #include "color.h"
 #include "facecube.h"
@@ -11,8 +12,8 @@
 char* solutionToString(search_t* search, int length, int depthPhase1)
 {
     char* s = (char*) calloc(length * 3 + 5, 1);
-    int cur = 0;
-    for (int i = 0; i < length; i++) {
+    int cur = 0, i;
+    for (i = 0; i < length; i++) {
         switch (search->ax[i]) {
         case 0:
             s[cur++] = 'U';
@@ -57,17 +58,24 @@ char* solutionToString(search_t* search, int length, int depthPhase1)
 
 char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, const char* cache_dir)
 {
+    search_t* search = (search_t*) calloc(1, sizeof(search_t));
+    facecube_t* fc;
+    cubiecube_t* cc;
+    coordcube_t* c;
+
+    int s, i;
+    int mv, n;
+    int busy;
+    int depthPhase1;
+    time_t tStart;
+    // +++++++++++++++++++++check for wrong input +++++++++++++++++++++++++++++
+    int count[6] = {0};
+
     if (PRUNING_INITED == 0) {
         initPruning(cache_dir);
     }
 
-    search_t* search = (search_t*) calloc(1, sizeof(search_t));
-
-    int s;
-    // +++++++++++++++++++++check for wrong input +++++++++++++++++++++++++++++
-    int count[6] = {0};
-
-    for (int i = 0; i < 54; i++)
+    for (i = 0; i < 54; i++)
         switch(facelets[i]) {
             case 'U':
                 count[U]++;
@@ -89,21 +97,21 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
                 break;
         }
 
-    for (int i = 0; i < 6; i++)
+    for (i = 0; i < 6; i++)
         if (count[i] != 9) {
             free(search);
             return NULL;
         }
 
-    facecube_t* fc = get_facecube_fromstring(facelets);
-    cubiecube_t* cc = toCubieCube(fc);
+    fc = get_facecube_fromstring(facelets);
+    cc = toCubieCube(fc);
     if ((s = verify(cc)) != 0) {
         free(search);
         return NULL;
     }
 
     // +++++++++++++++++++++++ initialization +++++++++++++++++++++++++++++++++
-    coordcube_t* c = get_coordcube(cc);
+    c = get_coordcube(cc);
 
     search->po[0] = 0;
     search->ax[0] = 0;
@@ -117,11 +125,12 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
     search->UBtoDF[0] = c->UBtoDF;
 
     search->minDistPhase1[1] = 1;// else failure for depth=1, n=0
-    int mv = 0, n = 0;
-    int busy = 0;
-    int depthPhase1 = 1;
+    mv = 0;
+    n = 0;
+    busy = 0;
+    depthPhase1 = 1;
 
-    long tStart = time(NULL);
+    tStart = time(NULL);
 
     // +++++++++++++++++++ Main loop ++++++++++++++++++++++++++++++++++++++++++
     do {
@@ -182,10 +191,10 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
             if (n == depthPhase1 - 1 && (s = totalDepth(search, depthPhase1, maxDepth)) >= 0) {
                 if (s == depthPhase1
                         || (search->ax[depthPhase1 - 1] != search->ax[depthPhase1] && search->ax[depthPhase1 - 1] != search->ax[depthPhase1] + 3)) {
+                    char* res;
                     free((void*) fc);
                     free((void*) cc);
                     free((void*) c);
-                    char* res;
                     if (useSeparator) {
                         res = solutionToString(search, s, depthPhase1);
                     } else {
@@ -198,14 +207,16 @@ char* solution(char* facelets, int maxDepth, long timeOut, int useSeparator, con
 
         }
     } while (1);
-
 }
 
 int totalDepth(search_t* search, int depthPhase1, int maxDepth)
 {
-    int mv = 0, d1 = 0, d2 = 0;
+    int mv = 0, d1 = 0, d2 = 0, i;
     int maxDepthPhase2 = MIN(10, maxDepth - depthPhase1);// Allow only max 10 moves in phase2
-    for (int i = 0; i < depthPhase1; i++) {
+    int depthPhase2;
+    int n;
+    int busy;
+    for (i = 0; i < depthPhase1; i++) {
         mv = 3 * search->ax[i] + search->po[i] - 1;
         // System.out.format("%d %d %d %d\n", i, mv, ax[i], po[i]);
         search->URFtoDLF[i + 1] = URFtoDLF_Move[search->URFtoDLF[i]][mv];
@@ -217,7 +228,7 @@ int totalDepth(search_t* search, int depthPhase1, int maxDepth)
             (N_SLICE2 * search->URFtoDLF[depthPhase1] + search->FRtoBR[depthPhase1]) * 2 + search->parity[depthPhase1])) > maxDepthPhase2)
         return -1;
 
-    for (int i = 0; i < depthPhase1; i++) {
+    for (i = 0; i < depthPhase1; i++) {
         mv = 3 * search->ax[i] + search->po[i] - 1;
         search->URtoUL[i + 1] = URtoUL_Move[search->URtoUL[i]][mv];
         search->UBtoDF[i + 1] = UBtoDF_Move[search->UBtoDF[i]][mv];
@@ -233,9 +244,9 @@ int totalDepth(search_t* search, int depthPhase1, int maxDepth)
 
     // now set up search
 
-    int depthPhase2 = 1;
-    int n = depthPhase1;
-    int busy = 0;
+    depthPhase2 = 1;
+    n = depthPhase1;
+    busy = 0;
     search->po[depthPhase1] = 0;
     search->ax[depthPhase1] = 0;
     search->minDistPhase2[n + 1] = 1;// else failure for depthPhase2=1, n=0
@@ -303,6 +314,7 @@ int totalDepth(search_t* search, int depthPhase1, int maxDepth)
 
 void patternize(char* facelets, char* pattern, char* patternized)
 {
+    facecube_t* fc;
     facecube_t* start_fc = get_facecube_fromstring(facelets);
     facecube_t* pattern_fc = get_facecube_fromstring(pattern);
     cubiecube_t* start_cc = toCubieCube(start_fc);
@@ -310,7 +322,7 @@ void patternize(char* facelets, char* pattern, char* patternized)
     cubiecube_t* inv_pattern_cc = get_cubiecube();
     invCubieCube(pattern_cc, inv_pattern_cc);
     multiply(inv_pattern_cc, start_cc);
-    facecube_t* fc = toFaceCube(inv_pattern_cc);
+    fc = toFaceCube(inv_pattern_cc);
     to_String(fc, patternized);
     free(start_fc);
     free(pattern_fc);
