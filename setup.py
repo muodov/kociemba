@@ -1,10 +1,15 @@
+import os
+
 from setuptools import setup
 
+long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
 setup(
     name='kociemba',
-    version='1.1',
+    version='1.2',
     description='Python/C implementation of Herbert Kociemba\'s Two-Phase algorithm for solving Rubik\'s Cube',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     keywords='kociemba rubik cube solver twophase',
     url='https://github.com/muodov/kociemba',
     author='muodov',
