@@ -21,7 +21,7 @@ You might need to install libffi system library beforehand. For example, on Debi
 
 Library should work on Windows, however it is not automatically tested at this moment: Travis CI [doesn't have windows support](https://github.com/travis-ci/travis-ci/issues/2104).
 
-Normal `pip install kociemba` (or `pip3 install kociemba` for Python 3.3+) should work, but you will need to install free build tools from Microsoft first: check the following links:
+Normal `pip install kociemba` (or `pip3 install kociemba` for Python 3.3+) should work, but you will need to install free build tools from Microsoft first. Check the following links:
 
 - for Python 2.7: https://www.microsoft.com/en-us/download/details.aspx?id=44266
 - for Python 3: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017
