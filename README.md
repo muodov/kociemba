@@ -97,3 +97,7 @@ When possible, `kociemba` will use C implementation under the hood. If something
 To run the tests, clone the repository and run:
 
 ```$ python setup.py test```
+
+## Thanks to
+
+- @jarheadjoe for his contribution to Windows support
