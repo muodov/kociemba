@@ -6,14 +6,27 @@ Original Java implementation can be found here: http://kociemba.org/download.htm
 
 These ports are pretty straightforward (not to say dumb) and most probably can be optimized. But they have been extensively tested in our Rubik's cube solving machines ([FAC System Solver](https://blog.zok.pw/hacking/2015/08/18/fac-rubik-solver/) and [Meccano Rubik's Shrine](http://blog.zok.pw/hacking/2016/08/12/meccano-rubiks-shrine/)), so be confident the algorithm is working.
 
-## Installation and usage
+## Installation
 This package is published on PyPI and can be installed with:
 
 ```$ pip install kociemba```
 
-It was tested under Python 2.7 and 3.5.
+It was tested under Python 2.7 and 3.3+.
 
-On some systems you might need to install libffi system library beforehand. For example, on Debian-based distributions (e.g. Raspbian) you would run `sudo apt-get install libffi-dev`. 
+### Unix-based systems
+
+You might need to install libffi system library beforehand. For example, on Debian-based distributions (e.g. Raspbian) you would run `sudo apt-get install libffi-dev`.
+
+### Windows
+
+Library should work on Windows, however it is not automatically tested at this moment: Travis CI [doesn't have windows support](https://github.com/travis-ci/travis-ci/issues/2104).
+
+Normal `pip install kociemba` (or `pip3 install kociemba` for Python 3.3+) should work, but you will need to install free build tools from Microsoft first. Check the following links:
+
+- for Python 2.7: https://www.microsoft.com/en-us/download/details.aspx?id=44266
+- for Python 3: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017
+
+## Usage
 
 The package exposes just one function ```solve()```, which accepts a cube definition string and returns a solution string in standard notation (see below).
 Optional second argument allows solving to a specific pattern.
@@ -69,7 +82,7 @@ So, for example, a definition of a solved cube would be `UUUUUUUUURRRRRRRRRFFFFF
 Solution string consists of space-separated parts, each of them represents a single move:
 * A single letter by itself means to turn that face clockwise 90 degrees.
 * A letter followed by an apostrophe means to turn that face counterclockwise 90 degrees.
-* A letter with the number 2 after it means to turn that face 180 degrees. 
+* A letter with the number 2 after it means to turn that face 180 degrees.
 
 e.g. **R U R’ U R U2 R’ U**
 
@@ -84,3 +97,7 @@ When possible, `kociemba` will use C implementation under the hood. If something
 To run the tests, clone the repository and run:
 
 ```$ python setup.py test```
+
+## Thanks to
+
+- @jarheadjoe for his contribution to Windows support

@@ -27,8 +27,9 @@ facecube_t* get_facecube()
 
 facecube_t* get_facecube_fromstring(char* cubeString)
 {
+    int i;
     facecube_t* res = (facecube_t *) calloc(1, sizeof(facecube_t));
-    for (int i = 0; i < 54; i++) {
+    for (i = 0; i < 54; i++) {
         switch(cubeString[i]) {
             case 'U':
                 res->f[i] = U;
@@ -55,7 +56,8 @@ facecube_t* get_facecube_fromstring(char* cubeString)
 
 void to_String(facecube_t* facecube, char* res)
 {
-    for (int i = 0; i < 54; i++)
+    int i;
+    for (i = 0; i < 54; i++)
         switch(facecube->f[i]) {
             case U:
                 res[i] = 'U';
@@ -81,14 +83,16 @@ void to_String(facecube_t* facecube, char* res)
 
 cubiecube_t* toCubieCube(facecube_t* facecube)
 {
+    int i, j;
     signed char ori;
-    cubiecube_t* ccRet = (cubiecube_t*) calloc(1, sizeof(cubiecube_t));
-    for (int i = 0; i < 8; i++)
-        ccRet->cp[i] = URF;// invalidate corners
-    for (int i = 0; i < 12; i++)
-        ccRet->ep[i] = UR;// and edges
     color_t col1, col2;
-    for(int i = 0; i < CORNER_COUNT; i++) {
+    cubiecube_t* ccRet = (cubiecube_t*) calloc(1, sizeof(cubiecube_t));
+    for (i = 0; i < 8; i++)
+        ccRet->cp[i] = URF;// invalidate corners
+    for (i = 0; i < 12; i++)
+        ccRet->ep[i] = UR;// and edges
+
+    for(i = 0; i < CORNER_COUNT; i++) {
         // get the colors of the cubie at corner i, starting with U/D
         for (ori = 0; ori < 3; ori++)
             if (facecube->f[cornerFacelet[i][ori]] == U || facecube->f[cornerFacelet[i][ori]] == D)
@@ -96,7 +100,7 @@ cubiecube_t* toCubieCube(facecube_t* facecube)
         col1 = facecube->f[cornerFacelet[i][(ori + 1) % 3]];
         col2 = facecube->f[cornerFacelet[i][(ori + 2) % 3]];
 
-        for (int j = 0; j < CORNER_COUNT; j++) {
+        for (j = 0; j < CORNER_COUNT; j++) {
             if (col1 == cornerColor[j][1] && col2 == cornerColor[j][2]) {
                 // in cornerposition i we have cornercubie j
                 ccRet->cp[i] = j;
@@ -106,8 +110,8 @@ cubiecube_t* toCubieCube(facecube_t* facecube)
         }
     }
 
-    for (int i = 0; i < EDGE_COUNT; i++) {
-        for (int j = 0; j < EDGE_COUNT; j++) {
+    for (i = 0; i < EDGE_COUNT; i++) {
+        for (j = 0; j < EDGE_COUNT; j++) {
             if (facecube->f[edgeFacelet[i][0]] == edgeColor[j][0]
                     && facecube->f[edgeFacelet[i][1]] == edgeColor[j][1]) {
                 ccRet->ep[i] = j;
