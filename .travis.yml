@@ -12,6 +12,8 @@ python:
   - "3.7-dev"  # 3.7 development branch
   - "pypy"
 # command to install dependencies
-install: "python setup.py install"
+install:
+  - pip install setuptools_scm
+  - python setup.py install
 # command to run tests
 script: python setup.py test
