@@ -6,7 +6,7 @@ ffi.set_source(
     """
     #include "search.h"
 
-    char* solve(char *cubestring, char *patternstring, char *cache_dir)
+    char* solve(char *cubestring, char *patternstring, char *cache_dir, int max_depth)
     {
         char patternized[64];
         char *sol;
@@ -18,7 +18,7 @@ ffi.set_source(
 
         sol = solution(
             cubestring,
-            24,
+            max_depth,
             1000,
             0,
             cache_dir
@@ -37,7 +37,7 @@ ffi.set_source(
     extra_compile_args=['-std=c99', '-O3', '-D_XOPEN_SOURCE=700']
 )
 
-ffi.cdef("char* solve(char *cubestring, char *patternstring, char *cache_dir);")
+ffi.cdef("char* solve(char *cubestring, char *patternstring, char *cache_dir, int max_depth);")
 
 if __name__ == "__main__":
     ffi.compile(verbose=True)
