@@ -1,11 +1,13 @@
 language: python
 sudo: required
-dist: xenial
+# dist: xenial
 python:
   - "2.7"
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
+  - "3.9"
   - "pypy"
 # command to install dependencies
 install:
