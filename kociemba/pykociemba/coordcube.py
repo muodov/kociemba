@@ -64,7 +64,7 @@ class CoordCube(object):
     N_URtoDF = 20160    # 8!/(8-6)! permutation of UR,UF,UL,UB,DR,DF edges in phase2
 
     N_URFtoDLB = 40320  # 8! permutations of the corners
-    N_URtoBR = 479001600    # 8! permutations of the corners
+    N_URtoBR = 479001600    # 12! permutations of the edges
 
     N_MOVE = 18
 
