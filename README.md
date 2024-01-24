@@ -81,6 +81,23 @@ B-color, in position U3 we have the L color etc. according to the order `U1`, `U
 
 So, for example, a definition of a solved cube would be `UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB`
 
+For easier use, you can specify colors instead of positions, and get the positions with `color2pos.py`:
+```sh
+cat > cube.txt <<EOF
+wwwwwwwww
+rrrrrrrrr
+ggggggggg
+yyyyyyyyy
+ooooooooo
+bbbbbbbbb
+EOF
+
+python color2pos.py < cube.txt
+
+# => UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB
+```
+
+
 Solution string consists of space-separated parts, each of them represents a single move:
 * A single letter by itself means to turn that face clockwise 90 degrees.
 * A letter followed by an apostrophe means to turn that face counterclockwise 90 degrees.
