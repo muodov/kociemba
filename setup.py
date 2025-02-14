@@ -32,7 +32,7 @@ setup(
     entry_points = {
         'console_scripts': ['kociemba=kociemba.command_line:main'],
     },
-    setup_requires=['pytest-runner', "cffi>=1.0.0"],
+    setup_requires=['pytest-runner', "cffi>=1.0.0", "setuptools < 74"],
     tests_require=['pytest', ],
     zip_safe=False,
     cffi_modules=["kociemba/build_ckociemba.py:ffi"],
